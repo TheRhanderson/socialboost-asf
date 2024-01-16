@@ -1,0 +1,192 @@
+name: Plugin-publish
+
+on: [push, pull_request]
+
+env:
+  CONFIGURATION: Release
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  DOTNET_SDK_VERSION: 8.0
+  GPG_PRIVATE_KEY: ${{ secrets.ARCHIBOT_GPG_PRIVATE_KEY }} # Optional, if secret not provided, will skip signing SHA512SUMS with GPG key. You can specify your own credentials if you'd like to, simply change ARCHIBOT_GPG_PRIVATE_KEY here to the one you want to use
+  PLUGIN_NAME: MyAwesomePlugin
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+      with:
+        show-progress: false
+        submodules: recursive
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v4.0.0
+      with:
+        dotnet-version: ${{ env.DOTNET_SDK_VERSION }}
+
+    - name: Verify .NET Core
+      run: dotnet --info
+
+    - name: Publish plugin on Unix
+      if: startsWith(matrix.os, 'macos-') || startsWith(matrix.os, 'ubuntu-')
+      shell: sh
+      run: |
+        set -eu
+
+        dotnet publish "$PLUGIN_NAME" -c "$CONFIGURATION" -o "out/plugin/${PLUGIN_NAME}" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+
+        # By default use fastest compression
+        seven_zip_args="-mx=1"
+        zip_args="-1"
+
+        # Include extra logic for builds marked for release
+        case "$GITHUB_REF" in
+            "refs/tags/"*)
+                # Tweak compression args for release publishing
+                seven_zip_args="-mx=9 -mfb=258 -mpass=15"
+                zip_args="-9"
+                ;;
+        esac
+
+        # Create the final zip file
+        case "$(uname -s)" in
+            "Darwin")
+                # We prefer to use zip on OS X as 7z implementation on that OS doesn't handle file permissions (chmod +x)
+                if command -v zip >/dev/null; then
+                    (
+                        cd "${GITHUB_WORKSPACE}/out/plugin"
+                        zip -q -r $zip_args "../${PLUGIN_NAME}.zip" .
+                    )
+                elif command -v 7z >/dev/null; then
+                    7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${PLUGIN_NAME}.zip" "${GITHUB_WORKSPACE}/out/plugin/*"
+                else
+                    echo "ERROR: No supported zip tool!"
+                    return 1
+                fi
+                ;;
+            *)
+                if command -v 7z >/dev/null; then
+                    7z a -bd -slp -tzip -mm=Deflate $seven_zip_args "out/${PLUGIN_NAME}.zip" "${GITHUB_WORKSPACE}/out/plugin/*"
+                elif command -v zip >/dev/null; then
+                    (
+                        cd "${GITHUB_WORKSPACE}/out/plugin"
+                        zip -q -r $zip_args "../${PLUGIN_NAME}.zip" .
+                    )
+                else
+                    echo "ERROR: No supported zip tool!"
+                    return 1
+                fi
+                ;;
+        esac
+
+    - name: Publish plugin on Windows
+      if: startsWith(matrix.os, 'windows-')
+      shell: pwsh
+      run: |
+        Set-StrictMode -Version Latest
+        $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
+
+        Set-Location "$env:GITHUB_WORKSPACE"
+
+        dotnet publish "$env:PLUGIN_NAME" -c "$env:CONFIGURATION" -o "out\plugin\$env:PLUGIN_NAME" -p:ContinuousIntegrationBuild=true -p:TargetLatestRuntimePatch=false -p:UseAppHost=false --nologo
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+        # By default use fastest compression
+        $compressionArgs = '-mx=1'
+
+        # Include extra logic for builds marked for release
+        if ($env:GITHUB_REF -like 'refs/tags/*') {
+            # Tweak compression args for release publishing
+            $compressionArgs = '-mx=9', '-mfb=258', '-mpass=15'
+        }
+
+        # Create the final zip file
+        7z a -bd -slp -tzip -mm=Deflate $compressionArgs "out\$env:PLUGIN_NAME.zip" "$env:GITHUB_WORKSPACE\out\plugin\*"
+
+        if ($LastExitCode -ne 0) {
+            throw "Last command failed."
+        }
+
+    - name: Upload plugin artifact
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: ${{ matrix.os }}_${{ env.PLUGIN_NAME }}
+        path: out/${{ env.PLUGIN_NAME }}.zip
+
+  release:
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
+    needs: publish
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4.1.1
+      with:
+        show-progress: false
+
+    - name: Download plugin artifact from ubuntu-latest
+      uses: actions/download-artifact@v4.1.0
+      with:
+        name: ubuntu-latest_${{ env.PLUGIN_NAME }}
+        path: out
+
+    - name: Import GPG key for signing
+      uses: crazy-max/ghaction-import-gpg@v6.1.0
+      if: ${{ env.GPG_PRIVATE_KEY != null }}
+      with:
+        gpg_private_key: ${{ env.GPG_PRIVATE_KEY }}
+
+    - name: Generate SHA-512 checksums and signature
+      shell: sh
+      run: |
+        set -eu
+
+        (
+            cd "out"
+
+            sha512sum *.zip > SHA512SUMS
+
+            if [ -n "$GPG_PRIVATE_KEY" ]; then
+                gpg -a -b -o SHA512SUMS.sign SHA512SUMS
+            fi
+        )
+
+    - name: Upload SHA512SUMS
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: SHA512SUMS
+        path: out/SHA512SUMS
+
+    - name: Upload SHA512SUMS.sign
+      uses: actions/upload-artifact@v4.0.0
+      if: ${{ env.GPG_PRIVATE_KEY != null }}
+      with:
+        name: SHA512SUMS.sign
+        path: out/SHA512SUMS.sign
+
+    - name: Create GitHub release
+      uses: ncipollo/release-action@v1.13.0
+      with:
+        artifacts: "out/*"
+        bodyFile: .github/RELEASE_TEMPLATE.md
+        makeLatest: false
+        name: ${{ env.PLUGIN_NAME }} V${{ github.ref_name }}
+        prerelease: true
+        token: ${{ secrets.GITHUB_TOKEN }}
