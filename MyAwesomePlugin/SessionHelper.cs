@@ -4,6 +4,9 @@ using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam;
+using ArchiSteamFarm.Core;
+using ArchiSteamFarm.Web.Responses;
+using System.Text.RegularExpressions;
 
 namespace SocialBoost;
 internal static class SessionHelper {
@@ -15,4 +18,32 @@ internal static class SessionHelper {
 			? await Task.FromResult<string?>(sessionIdCookie.Value).ConfigureAwait(false)
 			: await Task.FromResult<string?>("").ConfigureAwait(false);
 	}
+
+	internal static async Task<string?> FetchReviewID(string urlReview) {
+
+		Uri uri2 = new(urlReview);
+		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+
+		if (response == null || response.Content?.Body == null) {
+			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
+			return string.Empty;
+		}
+
+		string strd = response.Content.Body.InnerHtml;
+
+#pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+		Match match = Regex.Match(strd, @"UserReview_Report\(\s*'(\d+)',\s*'https://steamcommunity.com',\s*function\( results \)");
+#pragma warning restore SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+
+		if (match.Success) {
+			// O valor está na primeira captura da correspondência
+			string valorExtraido = match.Groups[1].Value;
+			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
+			return valorExtraido;
+		} else {
+			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
+			return string.Empty;
+		}
+	}
+
 }

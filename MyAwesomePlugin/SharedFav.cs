@@ -10,10 +10,10 @@ using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web.Responses;
 
 namespace SocialBoost;
-internal static class SharedLike {
+internal static class SharedFav {
 
 
-	public static async Task<string?> EnviarLikeSharedfiles(Bot bot, EAccess access, string id) {
+	public static async Task<string?> EnviarFavSharedfiles(Bot bot, EAccess access, string id, string appID) {
 
 		if (access < EAccess.Master) {
 			return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
@@ -28,18 +28,19 @@ internal static class SharedLike {
 		}
 
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
-		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|LIKE => {id} (Enviando)");
+		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|FAV => {id} (Enviando)");
 
 		if (string.IsNullOrEmpty(sessionId)) {
 			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
 		}
 
-		Uri request = new(ArchiWebHandler.SteamCommunityURL, "/sharedfiles/voteup");
+		Uri request = new(ArchiWebHandler.SteamCommunityURL, "/sharedfiles/favorite");
 		Uri requestViewPage = new(ArchiWebHandler.SteamCommunityURL, $"/sharedfiles/filedetails/?id={id}");
 
-		Dictionary<string, string> data = new(2)
+		Dictionary<string, string> data = new(3)
 		{
 		{ "id", id },
+		{ "appid", appID },
 		{ "sessionid", sessionId }
 		};
 
@@ -54,8 +55,8 @@ internal static class SharedLike {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
 
-		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|LIKE => {id} (OK)");
-		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {id} — Like" : Strings.WarningFailed);
+		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|FAV => {id} (OK)");
+		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {id} — Favorito" : Strings.WarningFailed);
 
 	}
 
@@ -64,7 +65,7 @@ internal static class SharedLike {
 		return response;
 	}
 
-	public static async Task<string?> EnviarLikeSharedfiles(EAccess access, ulong steamID, string botNames, string argument) {
+	public static async Task<string?> EnviarFavSharedfiles(EAccess access, ulong steamID, string botNames, string argument, string argument2) {
 
 		if (string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(argument)) {
 			ASF.ArchiLogger.LogNullError(null, nameof(botNames) + " || " + nameof(argument));
@@ -78,8 +79,8 @@ internal static class SharedLike {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"Sharedfiles-LIKE-{argument}").ConfigureAwait(false);
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => EnviarLikeSharedfiles(bot, Commands.GetProxyAccess(bot, access, steamID), argument))).ConfigureAwait(false);
+		bool? logger = await DSKLogger.CompartilharAtividade($"Sharedfiles-FAV-{argument}").ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => EnviarFavSharedfiles(bot, Commands.GetProxyAccess(bot, access, steamID), argument, argument2))).ConfigureAwait(false);
 		List<string?> responses = new(results.Where(result => !string.IsNullOrEmpty(result)));
 		ASF.ArchiLogger.LogGenericInfo($"Envio concluído! Criado por @therhanderson");
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
@@ -87,6 +88,7 @@ internal static class SharedLike {
 
 	public static async Task<string?> FetchSessionID(Bot bot) =>
 	await SessionHelper.FetchSessionID(bot).ConfigureAwait(false);
+
 
 	private static string FormatBotResponse(string message, string botName) =>
 		$"<{botName}> {message}";
