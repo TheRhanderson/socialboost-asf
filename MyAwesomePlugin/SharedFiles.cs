@@ -15,6 +15,8 @@ internal static class SharedFiles {
 
 	public static async Task<string?> EnviarSharedfiles(Bot bot, EAccess access, string id, string appID) {
 
+		int validoLikes = 1;
+
 		if (access < EAccess.Master) {
 			return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
 		}
@@ -24,7 +26,7 @@ internal static class SharedFiles {
 		}
 
 		if (bot.IsAccountLimited) {
-			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
+			validoLikes = 0;
 		}
 
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
@@ -57,10 +59,14 @@ internal static class SharedFiles {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
 
-		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, referer: requestViewPage).ConfigureAwait(false);
+		bool postSuccess;
 
-		if (!postSuccess) {
-			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+		if (validoLikes == 1) {
+			postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, referer: requestViewPage).ConfigureAwait(false);
+
+			if (!postSuccess) {
+				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+			}
 		}
 
 		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request2, data: data2, referer: requestViewPage).ConfigureAwait(false);
@@ -79,7 +85,7 @@ internal static class SharedFiles {
 		return response;
 	}
 
-	public static async Task<string?> EnviarSharedfiles(EAccess access, ulong steamID, string botNames, string argument, string argument2) {
+	public static async Task<string?> EnviarSharedfiles(EAccess access, ulong steamID, string botNames, string argument) {
 
 		if (string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(argument)) {
 			ASF.ArchiLogger.LogNullError(null, nameof(botNames) + " || " + nameof(argument));
@@ -91,6 +97,15 @@ internal static class SharedFiles {
 
 		if ((bots == null) || (bots.Count == 0)) {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
+		}
+
+
+		string? argument2 = await SessionHelper.FetchAppIDShared($"https://steamcommunity.com/sharedfiles/filedetails/?id={argument}").ConfigureAwait(false);
+
+		Bot firstBot = bots.First();
+
+		if (string.IsNullOrEmpty(argument2)) {
+			return Commands.FormatBotResponse("Erro ao determinar appid do sharedfiles", firstBot.BotName);
 		}
 
 		bool? logger = await DSKLogger.CompartilharAtividade($"Sharedfiles-LIKE|FAV-{argument}").ConfigureAwait(false);

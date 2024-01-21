@@ -23,9 +23,9 @@ internal static class SharedFav {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		if (bot.IsAccountLimited) {
-			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
-		}
+		//if (bot.IsAccountLimited) {
+		//	return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);   /// Isso funciona com contas limitadas.
+		//}
 
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|FAV => {id} (Enviando)");
@@ -65,7 +65,7 @@ internal static class SharedFav {
 		return response;
 	}
 
-	public static async Task<string?> EnviarFavSharedfiles(EAccess access, ulong steamID, string botNames, string argument, string argument2) {
+	public static async Task<string?> EnviarFavSharedfiles(EAccess access, ulong steamID, string botNames, string argument) {
 
 		if (string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(argument)) {
 			ASF.ArchiLogger.LogNullError(null, nameof(botNames) + " || " + nameof(argument));
@@ -77,6 +77,14 @@ internal static class SharedFav {
 
 		if ((bots == null) || (bots.Count == 0)) {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
+		}
+
+		string? argument2 = await SessionHelper.FetchAppIDShared($"https://steamcommunity.com/sharedfiles/filedetails/?id={argument}").ConfigureAwait(false);
+
+		Bot firstBot = bots.First();
+
+		if (string.IsNullOrEmpty(argument2)) {
+			return Commands.FormatBotResponse("Erro ao determinar appid do sharedfiles", firstBot.BotName);
 		}
 
 		bool? logger = await DSKLogger.CompartilharAtividade($"Sharedfiles-FAV-{argument}").ConfigureAwait(false);

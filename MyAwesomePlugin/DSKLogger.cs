@@ -29,8 +29,8 @@ internal static class CatAPI {
 		//ArgumentNullException.ThrowIfNull(webBrowser);
 
 		List<KeyValuePair<string, string>> headers = [
-			new("X-HWID", "2acda3ba894430706ec0107e3b42bc39fdf3ec58"),
-			new("X-USER", "TheRhanderson"),
+			new("X-HWID", "40184a3c5a62d37712a747cc6e8afe33156e2b17"),
+			new("X-USER", "gardemi14"),
 			new("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1234.567 Safari/537.36 DsK-SocialBoost/1.4"),
 			new("X-MCME", Environment.MachineName)
 	];
