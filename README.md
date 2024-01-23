@@ -1,30 +1,32 @@
-# SocialBoost - Amplificação de Interações no ArchiSteamFarm
+---
 
-O SocialBoost é um plug-in complementar para o ArchiSteamFarm, projetado para potencializar a interação nas plataformas Steam. Este plugin oferece funcionalidades para impulsionar o número de curtidas e favoritos em imagens, guias, e outros tipos de conteúdo, além de possibilitar a análise de jogos de usuários (Útil/Engraçado) e o seguimento da Oficina de jogadores, com mais recursos a serem adicionados em breve.
+# SocialBoost - Boosting Interactions on ArchiSteamFarm
 
-## Funcionalidades
+SocialBoost is a complementary plugin for ArchiSteamFarm, designed to enhance interactions on Steam platform. This plugin provides features to boost the number of likes and favorites on images, guides, and various content types. It also enables user game reviews (Useful/Funny) and allows following players' Workshop, with more features to be added soon.
+
+## Features
 
 ### Sharedfiles
-Para mídias do tipo sharedfiles, os seguintes comandos estão disponíveis:
+For sharedfiles media, the following commands are available:
 
-- **SHAREDLIKE [Bots] [Id]:** Envia curtidas para uma URL sharedfiles específica.
-- **SHAREDFAV [Bots] [Id]:** Envia favoritos para uma URL sharedfiles específica.
-- **SHAREDFILES [Bots] [Id]:** Envia curtidas e favoritos para uma URL sharedfiles específica.
+- **SHAREDLIKE [Bots] [Id]:** Sends likes to a specific sharedfiles URL.
+- **SHAREDFAV [Bots] [Id]:** Sends favorites to a specific sharedfiles URL.
+- **SHAREDFILES [Bots] [Id]:** Sends likes and favorites to a specific sharedfiles URL.
 
-Exemplo de uso: `SHAREDFILES ASF 3142209500` (O Id 3142209500 refere-se ao final da URL).
+Example usage: `SHAREDFILES ASF 3142209500` (The Id 3142209500 refers to the end of the URL).
 
-### Análise de Jogos
-Para análise de jogos, o comando disponível é:
+### Game Reviews
+For game reviews, the available command is:
 
-- **RATEREVIEW [Bots] [Url Análise] [Tipo]:** Envia uma recomendação (Útil ou Engraçado) para uma análise de jogo. O tipo 1 é para Útil, e o tipo 2 é para Engraçado.
+- **RATEREVIEW [Bots] [Review Url] [Type]:** Sends a recommendation (Useful or Funny) for a game review. Type 1 is for Useful, and type 2 is for Funny.
 
-Exemplo de uso: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommended/739630 1` (A URL é referente à análise de jogo, e o 1 indica uma recomendação Útil).
+Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommended/739630 1` (The URL refers to the game review, and 1 indicates a Useful recommendation).
 
-### Oficina Steam
-Para seguir a Oficina de um perfil Steam, utilize o comando:
+### Steam Workshop
+To follow a Steam profile's Workshop, use the command:
 
-- **WORKSHOP [Bots] [Url Perfil]:** Começa a seguir a Oficina deste perfil Steam. Contas limitadas são compatíveis.
+- **WORKSHOP [Bots] [Profile Url]:** Starts following the Workshop of this Steam profile. Limited accounts are compatible.
 
-Exemplo de uso: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx` (A URL deve ser a mesma usada para visitar o perfil no navegador).
+Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx` (The URL should be the same as used to visit the profile in the browser).
 
 ---
