@@ -30,6 +30,8 @@ internal static class SessionHelper {
 		}
 
 		string strd = response.Content.Body.InnerHtml;
+		//JsonObject htmlString = (JsonObject) response.Content.Body.OuterHtml;  // para adições futuras
+
 
 #pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
 		Match match = Regex.Match(strd, @"UserReview_Report\(\s*'(\d+)',\s*'https://steamcommunity.com',\s*function\( results \)");
@@ -61,6 +63,34 @@ internal static class SessionHelper {
 
 #pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
 		Match match = Regex.Match(strd, @"RecordAppImpression\(\s*(\d+)\s*,\s*'[^']*'\s*\);");
+#pragma warning restore SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+
+		if (match.Success) {
+			// O valor está na primeira captura da correspondência
+			string valorExtraido = match.Groups[1].Value;
+			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
+			return valorExtraido;
+		} else {
+			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
+			return string.Empty;
+		}
+	}
+
+
+
+	internal static async Task<string?> FetchSteamID64(string urlReview) {
+		Uri uri2 = new(urlReview);
+		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+
+		if (response == null || response.Content?.Body == null) {
+			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
+			return string.Empty;
+		}
+
+		string strd = response.Content.Body.InnerHtml;
+
+#pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+		Match match = Regex.Match(strd, @"""steamid"":""(\d+)""");
 #pragma warning restore SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
 
 		if (match.Success) {

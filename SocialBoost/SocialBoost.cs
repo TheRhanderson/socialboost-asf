@@ -21,8 +21,8 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 
 	public Task OnLoaded() => Task.CompletedTask;
 
-	[CLSCompliant(false)]
 
+	[CLSCompliant(false)]
 
 	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
 		if (!IsConnected) {
@@ -38,6 +38,7 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 			"SHAREDFAV" when args.Length > 2 => await SharedFav.EnviarFavSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"SHAREDFILES" when args.Length > 2 => await SharedFiles.EnviarSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"RATEREVIEW" when args.Length > 3 => await Reviews.EnviarReviews(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
+			"WORKSHOP" when args.Length > 2 => await Workshop.SeguirOficinaID64(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			_ => null
 		};
 	}

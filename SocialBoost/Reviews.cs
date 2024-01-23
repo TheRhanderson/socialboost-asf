@@ -15,7 +15,8 @@ internal static class Reviews {
 	public static async Task<string?> EnviarRateReviews(Bot bot, EAccess access, string url, string idreview, string action) {
 
 		if (access < EAccess.Master) {
-			return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			//return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			return null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {

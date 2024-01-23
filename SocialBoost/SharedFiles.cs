@@ -18,7 +18,8 @@ internal static class SharedFiles {
 		int validoLikes = 1;
 
 		if (access < EAccess.Master) {
-			return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			//return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			return null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {

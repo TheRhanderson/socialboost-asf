@@ -16,7 +16,8 @@ internal static class SharedFav {
 	public static async Task<string?> EnviarFavSharedfiles(Bot bot, EAccess access, string id, string appID) {
 
 		if (access < EAccess.Master) {
-			return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			//return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			return null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {

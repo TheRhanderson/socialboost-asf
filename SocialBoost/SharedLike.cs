@@ -16,7 +16,8 @@ internal static class SharedLike {
 	public static async Task<string?> EnviarLikeSharedfiles(Bot bot, EAccess access, string id) {
 
 		if (access < EAccess.Master) {
-			return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			//return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
+			return null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {
