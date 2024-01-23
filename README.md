@@ -1,6 +1,7 @@
 ---
 
 # SocialBoost - Boosting Interactions on ArchiSteamFarm
+![Github All Releases](https://img.shields.io/github/downloads/TheRhanderson/socialboost-asf/total.svg)
 
 SocialBoost is a complementary plugin for ArchiSteamFarm, designed to enhance interactions on Steam platform. This plugin provides features to boost the number of likes and favorites on images, guides, and various content types. It also enables user game reviews (Useful/Funny) and allows following players' Workshop, with more features to be added soon.
 
