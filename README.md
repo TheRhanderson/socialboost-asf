@@ -30,4 +30,4 @@ To follow a Steam profile's Workshop, use the command:
 Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx` (The URL should be the same as used to visit the profile in the browser).
 
 ---
-![Github All Releases](https://img.shields.io/github/downloads/TheRhanderson/:repo/socialboost-asf)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/TheRhanderson/socialboost-asf/total)
