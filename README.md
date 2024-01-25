@@ -1,8 +1,7 @@
 ---
-
 # SocialBoost - Boosting Interactions on ArchiSteamFarm
 
-SocialBoost is a complementary plugin for ArchiSteamFarm, designed to enhance interactions on Steam platform. This plugin provides features to boost the number of likes and favorites on images, guides, and various content types. It also enables user game reviews (Useful/Funny) and allows following players' Workshop, with more features to be added soon.
+SocialBoost is a complementary plugin for ArchiSteamFarm, designed to enhance interactions on the Steam platform. This plugin provides features to boost the number of likes and favorites on images, guides, and various content types. It also enables user game reviews (Useful/Funny) and allows following players' Workshop, with more features to be added soon.
 
 ## Features
 
@@ -18,16 +17,20 @@ Example usage: `SHAREDFILES ASF 3142209500` (The Id 3142209500 refers to the end
 ### Game Reviews
 For game reviews, the available command is:
 
-- **RATEREVIEW [Bots] [Review Url] [Type]:** Sends a recommendation (Useful or Funny) for a game review. Type 1 is for Useful, Type 2 is for Funny and Type 3 is for Not Useful.
+- **RATEREVIEW [Bots] [Review Url] [Type]:** Sends a recommendation for a game review.
+  - Type 1 (Useful)
+  - Type 2 (Funny)
+  - Type 3 (Not Useful)
 
 Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommended/739630 1` (The URL refers to the game review, and 1 indicates a Useful recommendation).
 
 ### Steam Workshop
 To follow a Steam profile's Workshop, use the command:
 
-- **WORKSHOP [Bots] [Profile Url] [Type]:** Starts following/unfollowing the Workshop of a specific Steam profile. Type 1 is for Following, Type 2 is for Unfollowing. Limited accounts are compatible.
+- **WORKSHOP [Bots] [Profile Url] [Type]:** Starts following/unfollowing the Workshop of a specific Steam profile. Limited accounts are compatible.
+  - Type 1 (Following)
+  - Type 2 (Unfollowing)
 
-Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx` (The URL should be the same as used to visit the profile in the browser).
+Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (The URL should be the same as used to visit the profile in the browser. This will follow the Steam profile.).
 
----
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/TheRhanderson/socialboost-asf/total)
