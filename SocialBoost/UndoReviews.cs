@@ -9,7 +9,7 @@ using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
 
 namespace SocialBoost;
-internal static class Reviews {
+internal static class UndoReviews {
 
 
 	public static async Task<string?> EnviarRateReviews(Bot bot, EAccess access, string url, string idreview, string action) {
@@ -31,10 +31,8 @@ internal static class Reviews {
 		Uri request2 = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/votetag/{idreview}");
 		Uri requestViewPage = new(url);
 
-
-
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
-		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{(action == "1" ? "UTIL" : (action == "2" ? "ENGRACADO" : "NAO UTIL"))} => (Enviando)");
+		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{(action == "1" ? "UTIL" : "ENGRACADO")} => (Enviando)");
 
 		if (string.IsNullOrEmpty(sessionId)) {
 			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
@@ -42,54 +40,30 @@ internal static class Reviews {
 
 
 		Dictionary<string, string> data1 = new(2)
-		   {
+		{
 		{ "rateup", "true" },
 		{ "sessionid", sessionId }
-	};
+		};
 
 		Dictionary<string, string> data2 = new(3)
-		{
+{
 		{ "rateup", "true" },
 		{ "tagid", "1" },
 		{ "sessionid", sessionId }
-	};
-
-		Dictionary<string, string> data3 = new(2)
-		{
-		{ "rateup", "false" },
-		{ "sessionid", sessionId }
-	};
+		};
 
 		bool postSuccess;
-		Uri requestToUse;
-		string tipoReview;
 
-		Dictionary<string, string> dataToUse;
-
-		if (action == "1") {
-			dataToUse = data1;
-			requestToUse = request;
-			tipoReview = "Util";
-		} else if (action == "2") {
-			dataToUse = data2;
-			requestToUse = request2;
-			tipoReview = "Engracado";
-		} else if (action == "3") {
-			dataToUse = data3;
-			requestToUse = request;
-			tipoReview = "Nao util";
-		} else {
-			return null;
-		}
-		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(requestToUse, data: dataToUse, referer: requestViewPage).ConfigureAwait(false);
+		Dictionary<string, string> dataToUse = action == "1" ? data1 : data2;
+		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(action == "1" ? request : request2, data: dataToUse, referer: requestViewPage).ConfigureAwait(false);
 
 
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
 
-		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{tipoReview.ToUpperInvariant()} => (OK)");
-		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {idreview} — {tipoReview}" : Strings.WarningFailed);
+		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{(action == "1" ? "UTIL" : "ENGRACADO")} => (OK)");
+		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {idreview} — {(action == "1" ? "Util" : "Engracado")}" : Strings.WarningFailed);
 
 	}
 
@@ -101,7 +75,7 @@ internal static class Reviews {
 			return null;
 		}
 
-		if (argument2 is not "1" and not "2" and not "3") {
+		if (argument2 is not "1" and not "2") {
 			return null;
 		}
 
@@ -111,7 +85,7 @@ internal static class Reviews {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"RATEREVIEW-{(argument2 == "1" ? "UTIL" : (argument2 == "2" ? "ENGRACADO" : "NAO UTIL"))}-{argument}").ConfigureAwait(false);
+		bool? logger = await DSKLogger.CompartilharAtividade($"RATEREVIEW-{(argument2 == "1" ? "UTIL" : "ENGRACADO")}-{argument}").ConfigureAwait(false);
 
 		string? argument3 = await SessionHelper.FetchReviewID(argument).ConfigureAwait(false);
 
