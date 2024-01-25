@@ -18,7 +18,7 @@ Example usage: `SHAREDFILES ASF 3142209500` (The Id 3142209500 refers to the end
 ### Game Reviews
 For game reviews, the available command is:
 
-- **RATEREVIEW [Bots] [Review Url] [Type]:** Sends a recommendation (Useful or Funny) for a game review. Type 1 is for Useful, and type 2 is for Funny.
+- **RATEREVIEW [Bots] [Review Url] [Type]:** Sends a recommendation (Useful or Funny) for a game review. Type 1 is for Useful, Type 2 is for Funny and Type 3 is for Not Useful.
 
 Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommended/739630 1` (The URL refers to the game review, and 1 indicates a Useful recommendation).
 
@@ -26,6 +26,7 @@ Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommend
 To follow a Steam profile's Workshop, use the command:
 
 - **WORKSHOP [Bots] [Profile Url]:** Starts following the Workshop of this Steam profile. Limited accounts are compatible.
+- **UNDOWORKSHOP [Bots] [Profile Url]:** Unfollow a Steam profile. Limited accounts are compatible.
 
 Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx` (The URL should be the same as used to visit the profile in the browser).
 
