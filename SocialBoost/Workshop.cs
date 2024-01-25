@@ -11,7 +11,7 @@ namespace SocialBoost;
 internal static class Workshop {
 
 
-	public static async Task<string?> SeguirOficinaPerfilSteam(Bot bot, EAccess access, string urlPerfil, string steamAlvo) {
+	public static async Task<string?> SeguirOficinaPerfilSteam(Bot bot, EAccess access, string urlPerfil, string steamAlvo, string action) {
 
 		if (access < EAccess.Master) {
 			//return bot.Commands.FormatBotResponse(Strings.ErrorAccessDenied);
@@ -27,13 +27,14 @@ internal static class Workshop {
 		//}
 
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
-		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|FOLLOW => {steamAlvo} (Enviando)");
+		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|{(action == "1" ? "FOLLOW" : "UNFOLLOW")} => {steamAlvo} (Enviando)");
 
 		if (string.IsNullOrEmpty(sessionId)) {
 			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
 		}
 
 		Uri request = new($"{urlPerfil}/followuser");
+		Uri request2 = new($"{urlPerfil}/unfollowuser");
 		Uri requestViewPage = new($"{urlPerfil}/myworkshopfiles/");
 
 		Dictionary<string, string> data = new(2)
@@ -42,22 +43,26 @@ internal static class Workshop {
 		{ "sessionid", sessionId }
 		};
 
-		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data, referer: requestViewPage).ConfigureAwait(false);
+		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(action == "1" ? request : request2, data: data, referer: requestViewPage).ConfigureAwait(false);
 
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
 
-		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|FOLLOW => {steamAlvo} (OK)");
-		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {steamAlvo} — Follower" : Strings.WarningFailed);
+		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|{(action == "1" ? "FOLLOW" : "UNFOLLOW")} => {steamAlvo} (OK)");
+		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {steamAlvo} — {(action == "1" ? "Follow" : "Unfollow")}" : Strings.WarningFailed);
 
 	}
 
-	public static async Task<string?> SeguirOficinaID64(EAccess access, ulong steamID, string botNames, string argument) {
+	public static async Task<string?> SeguirOficinaID64(EAccess access, ulong steamID, string botNames, string argument, string argument2) {
 
 		if (string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(argument)) {
 			ASF.ArchiLogger.LogNullError(null, nameof(botNames) + " || " + nameof(argument));
 
+			return null;
+		}
+
+		if (argument2 is not "1" and not "2") {
 			return null;
 		}
 
@@ -67,15 +72,14 @@ internal static class Workshop {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
 		}
 
-		string? argument2 = await SessionHelper.FetchSteamID64($"{argument}").ConfigureAwait(false);
+		string? argument3 = await SessionHelper.FetchSteamID64($"{argument}").ConfigureAwait(false);
 
-		if (argument2 == null) {
+		if (argument3 == null) {
 			return null;
 		}
 
-
-		bool? logger = await DSKLogger.CompartilharAtividade($"Workshop-FOLLOW-{argument2}").ConfigureAwait(false);
-		IList<string?> results = await Utilities.InParallel(bots.Select(bot => SeguirOficinaPerfilSteam(bot, Commands.GetProxyAccess(bot, access, steamID), argument, argument2))).ConfigureAwait(false);
+		bool? logger = await DSKLogger.CompartilharAtividade($"Workshop-{(argument2 == "1" ? "FOLLOW" : "UNFOLLOW")}-{argument3}").ConfigureAwait(false);
+		IList<string?> results = await Utilities.InParallel(bots.Select(bot => SeguirOficinaPerfilSteam(bot, Commands.GetProxyAccess(bot, access, steamID), argument, argument3, argument2))).ConfigureAwait(false);
 		List<string?> responses = new(results.Where(result => !string.IsNullOrEmpty(result)));
 		ASF.ArchiLogger.LogGenericInfo($"Envio concluído! Criado por @therhanderson");
 		return responses.Count > 0 ? string.Join(Environment.NewLine, responses) : null;
