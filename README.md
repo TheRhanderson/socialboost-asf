@@ -25,8 +25,7 @@ Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommend
 ### Steam Workshop
 To follow a Steam profile's Workshop, use the command:
 
-- **WORKSHOP [Bots] [Profile Url]:** Starts following the Workshop of this Steam profile. Limited accounts are compatible.
-- **UNDOWORKSHOP [Bots] [Profile Url]:** Unfollow a Steam profile. Limited accounts are compatible.
+- **WORKSHOP [Bots] [Profile Url] [Type]:** Starts following/unfollowing the Workshop of a specific Steam profile. Type 1 is for Following, Type 2 is for Unfollowing. Limited accounts are compatible.
 
 Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx` (The URL should be the same as used to visit the profile in the browser).
 
