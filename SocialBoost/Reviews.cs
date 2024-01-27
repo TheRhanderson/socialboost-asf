@@ -27,13 +27,11 @@ internal static class Reviews {
 			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
 		}
 
-
 		bool? botUtilizadoAnteriormente = DbHelper.VerificarEnvioItem(bot.BotName, "Reviews", idreview);
 
-		if (botUtilizadoAnteriormente == true) {
-			return null;
+		if (botUtilizadoAnteriormente == true && action != "3") {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview} — Já utilizado :(");
 		}
-
 
 		Uri request = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/rate/{idreview}");
 		Uri request2 = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/votetag/{idreview}");
@@ -97,7 +95,12 @@ internal static class Reviews {
 
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{tipoReview.ToUpperInvariant()} => (OK)");
 
-		DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview);
+		if (dataToUse != data3) {
+			DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview);
+		} else if (dataToUse == data3) {
+			DbHelper.RemoverEnvioItem(bot.BotName, "Reviews", idreview);
+		}
+
 		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {idreview} — {tipoReview}" : Strings.WarningFailed);
 
 	}

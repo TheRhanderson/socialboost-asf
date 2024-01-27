@@ -46,6 +46,24 @@ internal sealed class DbHelper {
 
 	}
 
+	public static void RemoverEnvioItem(string botName, string boostType, string idToCheck) {
+		string jsonContent = File.ReadAllText(FilePath);
+		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
+										  ?? [];
+
+		if (!data.TryGetValue(botName, out BotData? botData)) {
+			botData = new BotData();
+			data[botName] = botData;
+		}
+
+		List<string> reviewList = GetReviewList(boostType, botData);
+
+		// Verifica se o item foi removido com sucesso
+		if (reviewList.Remove(idToCheck)) {
+			File.WriteAllText(FilePath, JsonConvert.SerializeObject(data, Formatting.Indented));
+		}
+	}
+
 	private static List<string> GetReviewList(string boostType, BotData botData) =>
 		boostType switch {
 			"Reviews" => botData.Reviews,
