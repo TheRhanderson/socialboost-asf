@@ -28,14 +28,16 @@ internal static class Reviews {
 		}
 
 
+		bool? botUtilizadoAnteriormente = DbHelper.VerificarEnvioItem(bot.BotName, "Reviews", idreview);
 
+		if (botUtilizadoAnteriormente == true) {
+			return null;
+		}
 
 
 		Uri request = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/rate/{idreview}");
 		Uri request2 = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/votetag/{idreview}");
 		Uri requestViewPage = new(url);
-
-
 
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{(action == "1" ? "UTIL" : (action == "2" ? "ENGRACADO" : "NAO UTIL"))} => (Enviando)");
@@ -85,6 +87,7 @@ internal static class Reviews {
 		} else {
 			return null;
 		}
+
 		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(requestToUse, data: dataToUse, referer: requestViewPage).ConfigureAwait(false);
 
 
@@ -93,6 +96,8 @@ internal static class Reviews {
 		}
 
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{tipoReview.ToUpperInvariant()} => (OK)");
+
+		DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview);
 		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {idreview} — {tipoReview}" : Strings.WarningFailed);
 
 	}
