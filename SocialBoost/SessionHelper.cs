@@ -33,12 +33,11 @@ internal static class SessionHelper {
 		//JsonObject htmlString = (JsonObject) response.Content.Body.OuterHtml;  // para adições futuras
 
 
-#pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+#pragma warning disable SYSLIB1045
 		Match match = Regex.Match(strd, @"UserReview_Report\(\s*'(\d+)',\s*'https://steamcommunity.com',\s*function\( results \)");
-#pragma warning restore SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+#pragma warning restore SYSLIB1045
 
 		if (match.Success) {
-			// O valor está na primeira captura da correspondência
 			string valorExtraido = match.Groups[1].Value;
 			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
 			return valorExtraido;
@@ -47,8 +46,6 @@ internal static class SessionHelper {
 			return string.Empty;
 		}
 	}
-
-
 
 	internal static async Task<string?> FetchAppIDShared(string urlReview) {
 		Uri uri2 = new(urlReview);
@@ -61,12 +58,11 @@ internal static class SessionHelper {
 
 		string strd = response.Content.Body.InnerHtml;
 
-#pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+#pragma warning disable SYSLIB1045
 		Match match = Regex.Match(strd, @"RecordAppImpression\(\s*(\d+)\s*,\s*'[^']*'\s*\);");
-#pragma warning restore SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+#pragma warning restore SYSLIB1045
 
 		if (match.Success) {
-			// O valor está na primeira captura da correspondência
 			string valorExtraido = match.Groups[1].Value;
 			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
 			return valorExtraido;
@@ -75,8 +71,6 @@ internal static class SessionHelper {
 			return string.Empty;
 		}
 	}
-
-
 
 	internal static async Task<string?> FetchSteamID64(string urlReview) {
 		Uri uri2 = new(urlReview);
@@ -89,12 +83,11 @@ internal static class SessionHelper {
 
 		string strd = response.Content.Body.InnerHtml;
 
-#pragma warning disable SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+#pragma warning disable SYSLIB1045
 		Match match = Regex.Match(strd, @"""steamid"":""(\d+)""");
-#pragma warning restore SYSLIB1045 // Converter em 'GeneratedRegexAttribute'.
+#pragma warning restore SYSLIB1045
 
 		if (match.Success) {
-			// O valor está na primeira captura da correspondência
 			string valorExtraido = match.Groups[1].Value;
 			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
 			return valorExtraido;

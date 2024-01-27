@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Composition;
+using System.IO;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace SocialBoost;
 
@@ -52,6 +55,13 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 
 			if (IsEnabled) {
 				ASF.ArchiLogger.LogGenericInfo("Licença ativa. Suporte: https://dskillers.ovh");
+
+				string filePath = "plugins/socialboost-db.json";
+				if (!File.Exists(filePath)) {
+					Dictionary<string, DbHelper.BotData> initialData = [];
+					await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(initialData, Formatting.Indented)).ConfigureAwait(false);
+				}
+
 			} else {
 				ASF.ArchiLogger.LogGenericError("Licença expirou. Suporte: https://dskillers.ovh");
 			}
@@ -62,6 +72,5 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 			ASF.ArchiLogger.LogGenericError("Erro ao autenticar o plugin. Suporte: https://dskillers.ovh");
 		}
 	}
-
 }
 #pragma warning restore CA1812 // ASF uses this class during runtime

@@ -27,6 +27,10 @@ internal static class Reviews {
 			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
 		}
 
+
+
+
+
 		Uri request = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/rate/{idreview}");
 		Uri request2 = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/votetag/{idreview}");
 		Uri requestViewPage = new(url);
