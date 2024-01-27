@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using ArchiSteamFarm.Core;
 using Newtonsoft.Json;
 
 namespace SocialBoost;
@@ -29,42 +31,76 @@ internal sealed class DbHelper {
 
 	}
 
-	public static void AdicionarEnvioItem(string botName, string boostType, string idToCheck) {
+	public static async Task<bool> AdicionarEnvioItem(string botName, string boostType, string idToCheck) {
+		string filePath = FilePath;
 
-		string jsonContent = File.ReadAllText(FilePath);
+		// Lê o conteúdo do arquivo JSON de forma assíncrona
+		string jsonContent = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+		// Desserializa o JSON para um dicionário
 		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
 										  ?? [];
 
+		// Verifica se o bot já existe no dicionário, se não, adiciona
 		if (!data.TryGetValue(botName, out BotData? botData)) {
 			botData = new BotData();
 			data[botName] = botData;
 		}
 
+		// Obtém a lista correspondente com base no tipo de revisão
 		List<string> reviewList = GetReviewList(boostType, botData);
+
+		ASF.ArchiLogger.LogGenericInfo($"{botName} {boostType} {idToCheck}");
+
+		// Verifica se o ID já existe na lista
+		if (reviewList.Contains(idToCheck)) {
+			ASF.ArchiLogger.LogGenericInfo($"ID já existe na lista: {idToCheck}");
+			return false;
+		}
+
+		// Adiciona o ID à lista do tipo correto
 		reviewList.Add(idToCheck);
-		File.WriteAllText(FilePath, JsonConvert.SerializeObject(data, Formatting.Indented));
 
+		// Serializa e escreve o dicionário de volta ao arquivo de forma assíncrona
+		await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(data, Formatting.Indented)).ConfigureAwait(false);
+
+		return true;
 	}
 
-	public static void RemoverEnvioItem(string botName, string boostType, string idToCheck) {
-		string jsonContent = File.ReadAllText(FilePath);
+
+	public static async Task<bool> RemoverItem(string botName, string boostType, string idToRemove) {
+		string filePath = FilePath;
+
+		// Lê o conteúdo do arquivo JSON de forma assíncrona
+		string jsonContent = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+		// Desserializa o JSON para um dicionário
 		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
 										  ?? [];
 
-		if (!data.TryGetValue(botName, out BotData? botData)) {
-			botData = new BotData();
-			data[botName] = botData;
+		// Verifica se o bot existe no dicionário
+		if (data.TryGetValue(botName, out BotData? botData)) {
+			// Obtém a lista correspondente com base no tipo de revisão
+			List<string> reviewList = GetReviewList(boostType, botData);
+
+			ASF.ArchiLogger.LogGenericInfo($"{botName} {boostType} {idToRemove}");
+
+			// Tenta remover o ID da lista e verifica se foi removido com sucesso
+			if (reviewList.Remove(idToRemove)) {
+				// Serializa e escreve o dicionário de volta ao arquivo de forma assíncrona
+				await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(data, Formatting.Indented)).ConfigureAwait(false);
+
+				ASF.ArchiLogger.LogGenericInfo($"ID removido com sucesso: {idToRemove}");
+				return true;
+			}
 		}
 
-		List<string> reviewList = GetReviewList(boostType, botData);
-
-		// Verifica se o item foi removido com sucesso
-		if (reviewList.Remove(idToCheck)) {
-			File.WriteAllText(FilePath, JsonConvert.SerializeObject(data, Formatting.Indented));
-		}
+		// Se não entrou no bloco do "if" ou se a remoção não foi bem-sucedida, retorna false
+		return false;
 	}
 
-	private static List<string> GetReviewList(string boostType, BotData botData) =>
+
+	public static List<string> GetReviewList(string boostType, BotData botData) =>
 		boostType switch {
 			"Reviews" => botData.Reviews,
 			"SharedLike" => botData.SharedLike,

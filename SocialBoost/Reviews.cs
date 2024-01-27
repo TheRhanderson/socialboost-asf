@@ -88,7 +88,6 @@ internal static class Reviews {
 
 		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(requestToUse, data: dataToUse, referer: requestViewPage).ConfigureAwait(false);
 
-
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
@@ -96,9 +95,20 @@ internal static class Reviews {
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{tipoReview.ToUpperInvariant()} => (OK)");
 
 		if (dataToUse != data3) {
-			DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview);
+			ASF.ArchiLogger.LogGenericInfo($"{bot.BotName} tipo reviews {idreview}");
+			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
+
+			if (!salvaItem.HasValue) {
+				return null;
+			}
+
 		} else if (dataToUse == data3) {
-			DbHelper.RemoverEnvioItem(bot.BotName, "Reviews", idreview);
+			bool? delItem = await DbHelper.RemoverItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
+
+			if (!delItem.HasValue) {
+				return null;
+			}
+
 		}
 
 		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {idreview} — {tipoReview}" : Strings.WarningFailed);
