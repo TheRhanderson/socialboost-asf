@@ -28,7 +28,7 @@ internal static class Workshop {
 
 		bool? botUtilizadoAnteriormente = DbHelper.VerificarEnvioItem(bot.BotName, "Workshop", steamAlvo);
 
-		if (botUtilizadoAnteriormente == true && action != "3") {
+		if (botUtilizadoAnteriormente == true && action != "2") {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {steamAlvo} — Já utilizado :(");
 		}
 
