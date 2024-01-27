@@ -78,6 +78,7 @@ internal sealed class DbHelper {
 			"Reviews" => botData.Reviews,
 			"SharedLike" => botData.SharedLike,
 			"SharedFav" => botData.SharedFav,
+			"Workshop" => botData.Workshop,
 			_ => throw new ArgumentException("Tipo de revisão inválido"),
 		};
 
@@ -85,5 +86,6 @@ internal sealed class DbHelper {
 		public List<string> Reviews { get; set; } = [];
 		public List<string> SharedLike { get; set; } = [];
 		public List<string> SharedFav { get; set; } = [];
+		public List<string> Workshop { get; set; } = [];
 	}
 }

@@ -26,6 +26,12 @@ internal static class Workshop {
 		//	return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);   // isso também funciona com contas limitada
 		//}
 
+		bool? botUtilizadoAnteriormente = DbHelper.VerificarEnvioItem(bot.BotName, "Workshop", steamAlvo);
+
+		if (botUtilizadoAnteriormente == true && action != "3") {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {steamAlvo} — Já utilizado :(");
+		}
+
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|{(action == "1" ? "FOLLOW" : "UNFOLLOW")} => {steamAlvo} (Enviando)");
 
@@ -48,6 +54,22 @@ internal static class Workshop {
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
+
+		if (action == "1") {
+			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "Workshop", steamAlvo).ConfigureAwait(false);
+
+			if (!salvaItem.HasValue) {
+				return null;
+			}
+
+		} else if (action == "2") {
+			bool? delItem = await DbHelper.RemoverItem(bot.BotName, "Workshop", steamAlvo).ConfigureAwait(false);
+
+			if (!delItem.HasValue) {
+				return null;
+			}
+		}
+
 
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|{(action == "1" ? "FOLLOW" : "UNFOLLOW")} => {steamAlvo} (OK)");
 		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {steamAlvo} — {(action == "1" ? "Follow" : "Unfollow")}" : Strings.WarningFailed);

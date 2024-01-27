@@ -94,7 +94,6 @@ internal static class Reviews {
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{tipoReview.ToUpperInvariant()} => (OK)");
 
 		if (dataToUse != data3) {
-			ASF.ArchiLogger.LogGenericInfo($"{bot.BotName} tipo reviews {idreview}");
 			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
 
 			if (!salvaItem.HasValue) {
