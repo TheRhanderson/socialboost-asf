@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SocialBoost;
+namespace SocialBoost.Helpers;
 internal sealed class DbHelper {
 
 	private const string FilePath = "plugins/socialboost-db.json";

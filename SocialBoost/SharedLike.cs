@@ -8,6 +8,7 @@ using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web.Responses;
+using SocialBoost.Helpers;
 
 namespace SocialBoost;
 internal static class SharedLike {

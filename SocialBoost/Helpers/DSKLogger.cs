@@ -8,7 +8,7 @@ using System.Text.Json;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SocialBoost;
+namespace SocialBoost.Helpers;
 internal static class DSKLogger {
 
 	internal static async Task<bool?> CompartilharAtividade(string activityLog) {

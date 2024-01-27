@@ -9,6 +9,7 @@ using ArchiSteamFarm.Plugins.Interfaces;
 using ArchiSteamFarm.Steam;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using SocialBoost.Helpers;
 
 namespace SocialBoost;
 

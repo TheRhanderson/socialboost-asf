@@ -8,7 +8,7 @@ using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Web.Responses;
 using System.Text.RegularExpressions;
 
-namespace SocialBoost;
+namespace SocialBoost.Helpers;
 internal static class SessionHelper {
 	public static async Task<string?> FetchSessionID(Bot bot) {
 		CookieCollection cc = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookies(ArchiWebHandler.SteamStoreURL);

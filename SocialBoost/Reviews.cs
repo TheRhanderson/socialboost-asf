@@ -7,6 +7,7 @@ using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
+using SocialBoost.Helpers;
 
 namespace SocialBoost;
 internal static class Reviews {
