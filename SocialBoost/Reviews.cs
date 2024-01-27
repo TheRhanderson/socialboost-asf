@@ -44,7 +44,6 @@ internal static class Reviews {
 			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
 		}
 
-
 		Dictionary<string, string> data1 = new(2)
 		   {
 		{ "rateup", "true" },
@@ -108,7 +107,6 @@ internal static class Reviews {
 			if (!delItem.HasValue) {
 				return null;
 			}
-
 		}
 
 		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {idreview} — {tipoReview}" : Strings.WarningFailed);
