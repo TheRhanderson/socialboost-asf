@@ -19,6 +19,12 @@ internal static class Workshop {
 			return null;
 		}
 
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "Workshop", steamAlvo).ConfigureAwait(false);
+
+		if (botUtilizadoAnteriormente == true && action != "2") {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {steamAlvo}");
+		}
+
 		if (!bot.IsConnectedAndLoggedOn) {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
@@ -26,12 +32,6 @@ internal static class Workshop {
 		//if (bot.IsAccountLimited) {
 		//	return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);   // isso também funciona com contas limitada
 		//}
-
-		bool? botUtilizadoAnteriormente = DbHelper.VerificarEnvioItem(bot.BotName, "Workshop", steamAlvo);
-
-		if (botUtilizadoAnteriormente == true && action != "2") {
-			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {steamAlvo} — Já utilizado :(");
-		}
 
 		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|{(action == "1" ? "FOLLOW" : "UNFOLLOW")} => {steamAlvo} (Enviando)");

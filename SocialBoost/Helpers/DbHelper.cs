@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Steam;
 using Newtonsoft.Json;
 
 namespace SocialBoost.Helpers;
@@ -9,24 +10,26 @@ internal sealed class DbHelper {
 
 	private const string FilePath = "plugins/socialboost-db.json";
 
-	public static bool VerificarEnvioItem(string botName, string boostType, string idToCheck) {
+	public static async Task<bool> VerificarEnvioItem(string botName, string boostType, string idToCheck) {
 
-		string jsonContent = File.ReadAllText(FilePath);
+		string filePath = FilePath;
+		string jsonContent = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+
+		// Deserializa o conteúdo para um Dictionary
 		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
 										  ?? [];
 
-		// Verifica se o bot já existe no arquivo JSON, se não, adiciona
 		if (!data.TryGetValue(botName, out BotData? botData)) {
 			botData = new BotData();
 			data[botName] = botData;
 		}
 
 		List<string> reviewList = GetReviewList(boostType, botData);
+
 		if (reviewList.Contains(idToCheck)) {
 			return true; // Já existe, retorna true
 		}
 		return false;
-
 	}
 
 	public static async Task<bool> AdicionarEnvioItem(string botName, string boostType, string idToCheck) {
@@ -71,6 +74,33 @@ internal sealed class DbHelper {
 			}
 		}
 		return false;
+	}
+
+	public static async Task<bool> RegistrarBancoBots(string botNames) {
+
+		HashSet<Bot>? bots = Bot.GetBots(botNames);
+
+		if ((bots == null) || (bots.Count == 0)) {
+			return false;
+		}
+
+		string caminhoDB = FilePath;
+		string jsonContent = await File.ReadAllTextAsync(caminhoDB).ConfigureAwait(false);
+
+		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
+										  ?? [];
+		foreach (Bot bot in bots) {
+			string botName = bot.BotName;
+			if (!data.TryGetValue(botName, out BotData? botData)) {
+				botData = new BotData();
+				data[botName] = botData;
+			}
+		}
+
+		string updatedJsonContent = JsonConvert.SerializeObject(data, Formatting.Indented);
+		await File.WriteAllTextAsync(caminhoDB, updatedJsonContent).ConfigureAwait(false);
+		return true;
+
 	}
 
 	public static List<string> GetReviewList(string boostType, BotData botData) =>

@@ -20,18 +20,18 @@ internal static class Reviews {
 			return null;
 		}
 
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
+
+		if (botUtilizadoAnteriormente == true && action != "3") {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview}");
+		}
+
 		if (!bot.IsConnectedAndLoggedOn) {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
 		if (bot.IsAccountLimited) {
 			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
-		}
-
-		bool? botUtilizadoAnteriormente = DbHelper.VerificarEnvioItem(bot.BotName, "Reviews", idreview);
-
-		if (botUtilizadoAnteriormente == true && action != "3") {
-			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview} — Já utilizado :(");
 		}
 
 		Uri request = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/rate/{idreview}");
