@@ -41,7 +41,7 @@ internal static class CatAPI {
 		bool? registrarContas = await DbHelper.RegistrarBancoBots("ASF").ConfigureAwait(false);
 
 		ObjectResponse<AuthResponse>? response = await ASF.WebBrowser!.UrlGetToJsonObject<AuthResponse>(request, headers, cancellationToken: cancellationToken).ConfigureAwait(false);
-		return (response?.Content?.Authentication == true) || (registrarContas == true) ? (response?.Content?.Authentication) : false;
+		return (response?.Content?.Authentication == true) && (registrarContas == true);
 	}
 }
 

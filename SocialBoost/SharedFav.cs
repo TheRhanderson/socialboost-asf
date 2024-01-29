@@ -21,6 +21,12 @@ internal static class SharedFav {
 			return null;
 		}
 
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+
+		if (botUtilizadoAnteriormente == true) {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
+		}
+
 		if (!bot.IsConnectedAndLoggedOn) {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
@@ -46,15 +52,25 @@ internal static class SharedFav {
 		{ "sessionid", sessionId }
 		};
 
-		HtmlDocumentResponse? response = await VisualizarPagina(bot, requestViewPage).ConfigureAwait(false);
-		if (response == null) {
-			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+		bool? verificaSharedLike = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
+		// verificamos se esse bot já enviou likes antes, pois então não precisamos 'visitar' a página novamente.
+		if (verificaSharedLike == false) {
+			HtmlDocumentResponse? response = await VisualizarPagina(bot, requestViewPage).ConfigureAwait(false);
+			if (response == null) {
+				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+			}
 		}
 
 		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data, referer: requestViewPage).ConfigureAwait(false);
 
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+		}
+
+		bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+
+		if (!salvaItem.HasValue) {
+			return null;
 		}
 
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|FAV => {id} (OK)");
