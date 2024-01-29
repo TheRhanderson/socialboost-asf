@@ -82,7 +82,14 @@ internal static class SharedFiles {
 		if (validoLikes == 1 && botUtilizadoAnteriormente1 == false) {
 			postLike = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, referer: requestViewPage).ConfigureAwait(false);
 
-			if (!postLike) {
+			if (postLike) {
+
+				bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
+				if (!salvaItem.HasValue) {
+					return null;
+				}
+
+			} else if (!postLike) {
 				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 			}
 		}
@@ -90,9 +97,17 @@ internal static class SharedFiles {
 		if (botUtilizadoAnteriormente2 == false) {
 			postFav = await bot.ArchiWebHandler.UrlPostWithSession(request2, data: data2, referer: requestViewPage).ConfigureAwait(false);
 
-			if (!postFav) {
+			if (postFav) {
+
+				bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+				if (!salvaItem.HasValue) {
+					return null;
+				}
+
+			} else if (!postFav) {
 				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 			}
+
 		}
 
 		bool postSuccess = postLike || postFav;
