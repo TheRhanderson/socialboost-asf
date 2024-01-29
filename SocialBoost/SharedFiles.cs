@@ -23,6 +23,13 @@ internal static class SharedFiles {
 			return null;
 		}
 
+		bool? botUtilizadoAnteriormente1 = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente2 = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+
+		if (botUtilizadoAnteriormente1 == true && botUtilizadoAnteriormente2 == true) {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
+		}
+
 		if (!bot.IsConnectedAndLoggedOn) {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
@@ -56,29 +63,38 @@ internal static class SharedFiles {
 		{ "sessionid", sessionId }
 		};
 
-		HtmlDocumentResponse? response = await VisualizarPagina(bot, requestViewPage).ConfigureAwait(false);
-		if (response == null) {
-			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
-		}
 
-		bool postSuccess;
-
-		if (validoLikes == 1) {
-			postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, referer: requestViewPage).ConfigureAwait(false);
-
-			if (!postSuccess) {
+		if (botUtilizadoAnteriormente1 == true || botUtilizadoAnteriormente2 == true) {
+			// verificamos se esse bot já enviou likes ou favoritos antes, pois então não precisamos 'visitar' a página novamente.
+			HtmlDocumentResponse? response = await VisualizarPagina(bot, requestViewPage).ConfigureAwait(false);
+			if (response == null) {
 				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 			}
 		}
 
-		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request2, data: data2, referer: requestViewPage).ConfigureAwait(false);
+		bool postLike = false;
+		bool postFav = false;
 
-		if (!postSuccess) {
-			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+		if (validoLikes == 1 && botUtilizadoAnteriormente1 == false) {
+			postLike = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, referer: requestViewPage).ConfigureAwait(false);
+
+			if (!postLike) {
+				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+			}
 		}
 
+		if (botUtilizadoAnteriormente2 == false) {
+			postFav = await bot.ArchiWebHandler.UrlPostWithSession(request2, data: data2, referer: requestViewPage).ConfigureAwait(false);
+
+			if (!postFav) {
+				bot.ArchiLogger.LogGenericError("Erro ao executar POST");
+			}
+		}
+
+		bool postSuccess = postLike || postFav;
+
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|LIKE|FAV => {id} (OK)");
-		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {id} — Like+Favorito" : Strings.WarningFailed);
+		return bot.Commands.FormatBotResponse(postSuccess ? $"{Strings.Success.Trim()} — ID: {id} — {(postLike && postFav ? "Like+Favorito" : postLike ? "Like" : postFav ? "Favorito" : "")}" : Strings.WarningFailed);
 
 	}
 

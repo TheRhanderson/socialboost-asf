@@ -38,9 +38,7 @@ internal static class SessionHelper {
 #pragma warning restore SYSLIB1045
 
 		if (match.Success) {
-			string valorExtraido = match.Groups[1].Value;
-			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
-			return valorExtraido;
+			return match.Groups[1].Value;
 		} else {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
 			return string.Empty;
@@ -63,9 +61,7 @@ internal static class SessionHelper {
 #pragma warning restore SYSLIB1045
 
 		if (match.Success) {
-			string valorExtraido = match.Groups[1].Value;
-			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
-			return valorExtraido;
+			return match.Groups[1].Value;
 		} else {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
 			return string.Empty;
@@ -88,9 +84,7 @@ internal static class SessionHelper {
 #pragma warning restore SYSLIB1045
 
 		if (match.Success) {
-			string valorExtraido = match.Groups[1].Value;
-			ASF.ArchiLogger.LogGenericInfo("Valor extraído: " + valorExtraido);
-			return valorExtraido;
+			return match.Groups[1].Value;
 		} else {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
 			return string.Empty;
