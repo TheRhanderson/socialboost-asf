@@ -30,6 +30,10 @@ internal static class SharedFiles {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
 		}
 
+		if (botUtilizadoAnteriormente1 == false && botUtilizadoAnteriormente2 == true && bot.IsAccountLimited) {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
+		}
+
 		if (!bot.IsConnectedAndLoggedOn) {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
