@@ -67,8 +67,8 @@ internal static class SharedFiles {
 		{ "sessionid", sessionId }
 		};
 
-		if (botUtilizadoAnteriormente1.HasValue && !botUtilizadoAnteriormente1.Value &&
-			botUtilizadoAnteriormente2.HasValue && !botUtilizadoAnteriormente2.Value) {
+
+		if (botUtilizadoAnteriormente1 == true || botUtilizadoAnteriormente2 == true) {
 			// verificamos se esse bot já enviou likes ou favoritos antes, pois então não precisamos 'visitar' a página novamente.
 			HtmlDocumentResponse? response = await VisualizarPagina(bot, requestViewPage).ConfigureAwait(false);
 			if (response == null) {
