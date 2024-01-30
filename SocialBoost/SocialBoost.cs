@@ -55,6 +55,8 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 				ASF.ArchiLogger.LogGenericInfo("Licença ativa. Suporte: https://dskillers.ovh");
 			} else {
 				ASF.ArchiLogger.LogGenericError("Licença expirou. Suporte: https://dskillers.ovh");
+				IsEnabled = false;
+				IsConnected = false;
 			}
 		} else {
 			// Trate o caso em que AuthOPlugin retorna null
