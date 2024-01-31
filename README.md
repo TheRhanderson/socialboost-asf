@@ -43,6 +43,10 @@ Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (Th
    * Sharedlike and Sharedfav => expect the same ID that you find at the end of the URL.
    * Workshop => Expected the SteamID64 of the profile and not the full URL.
    * Reviews => Expected the review ID and not the full URL.
+ 
+## Privacy and Transparency of the Plugin
+
+Our plugin utilizes a straightforward authentication process with our server, ensuring that no sensitive data, including account names, logins, passwords, or even IP addresses, is shared. The data collection is solely aimed at understanding how users interact with the plugin. Feel free to recompile without this functionality if you don't want to share it.
 
 ## How to Install
 * Visit the [releases](https://github.com/TheRhanderson/socialboost-asf/releases) page, download the latest available version, extract it into the ``/plugins`` folder of your ASF, and restart the process. Have fun!
