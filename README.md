@@ -38,6 +38,11 @@ Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (Th
 ## Auto Management
 * SocialBoost now supports account management through a local database located in the ``/plugins`` folder.
   * The database keeps track of accounts used for specific submissions, ensuring they are not reused for the same type of submission in the future.
+* Use it to check how many bots can still submit for a given submission (Sharedfiles, Game Review, Workshop). The expected syntax is: ``CHECKBOOST [Type] [Id]``.
+   * ``[Type]`` can be: sharedlike, sharedfav, workshop, reviews
+   * Sharedlike and Sharedfav => expect the same ID that you find at the end of the URL.
+   * Workshop => Expected the SteamID64 of the profile and not the full URL.
+   * Reviews => Expected the review ID and not the full URL.
 
 ## How to Install
 * Visit the [releases](https://github.com/TheRhanderson/socialboost-asf/releases) page, download the latest available version, extract it into the ``/plugins`` folder of your ASF, and restart the process. Have fun!
