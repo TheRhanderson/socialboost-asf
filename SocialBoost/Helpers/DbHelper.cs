@@ -84,6 +84,11 @@ internal sealed class DbHelper {
 			return false;
 		}
 
+		if (!File.Exists(FilePath)) {
+			Dictionary<string, BotData> initialData = [];
+			await File.WriteAllTextAsync(FilePath, JsonConvert.SerializeObject(initialData, Formatting.Indented)).ConfigureAwait(false);
+		}
+
 		string caminhoDB = FilePath;
 		string jsonContent = await File.ReadAllTextAsync(caminhoDB).ConfigureAwait(false);
 
@@ -104,11 +109,11 @@ internal sealed class DbHelper {
 	}
 
 	public static List<string> GetReviewList(string boostType, BotData botData) =>
-		boostType switch {
-			"Reviews" => botData.Reviews,
-			"SharedLike" => botData.SharedLike,
-			"SharedFav" => botData.SharedFav,
-			"Workshop" => botData.Workshop,
+		boostType.ToUpperInvariant() switch {
+			"REVIEWS" => botData.Reviews,
+			"SHAREDLIKE" => botData.SharedLike,
+			"SHAREDFAV" => botData.SharedFav,
+			"WORKSHOP" => botData.Workshop,
 			_ => throw new ArgumentException("Tipo de revisão inválido"),
 		};
 

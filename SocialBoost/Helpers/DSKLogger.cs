@@ -46,7 +46,6 @@ internal static class CatAPI {
 }
 
 
-
 #pragma warning disable CA1812 // False positive, the class is used during json deserialization
 internal sealed class AuthResponse {
 	[JsonProperty("authentication", Required = Required.Always)]

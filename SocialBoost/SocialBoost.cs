@@ -26,6 +26,7 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 	[CLSCompliant(false)]
 
 	public async Task<string?> OnBotCommand(Bot bot, EAccess access, string message, string[] args, ulong steamID = 0) {
+
 		if (!IsConnected) {
 			await CatSteamAPI().ConfigureAwait(false);
 
@@ -40,6 +41,7 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 			"SHAREDFILES" when args.Length > 2 => await SharedFiles.EnviarSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"RATEREVIEW" when args.Length > 3 => await Reviews.EnviarReviews(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
 			"WORKSHOP" when args.Length > 3 => await Workshop.SeguirOficinaID64(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
+			"CHECKBOOST" when args.Length > 2 => await CheckBoost.VerificarEnvioItemDisp(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			_ => null
 		};
 	}
