@@ -19,7 +19,7 @@ internal static class Workshop {
 			return null;
 		}
 
-		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "Workshop", steamAlvo).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "WORKSHOP", steamAlvo).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true && action != "2") {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {steamAlvo}");
@@ -57,14 +57,14 @@ internal static class Workshop {
 		}
 
 		if (action == "1") {
-			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "Workshop", steamAlvo).ConfigureAwait(false);
+			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "WORKSHOP", steamAlvo).ConfigureAwait(false);
 
 			if (!salvaItem.HasValue) {
 				return null;
 			}
 
 		} else if (action == "2") {
-			bool? delItem = await DbHelper.RemoverItem(bot.BotName, "Workshop", steamAlvo).ConfigureAwait(false);
+			bool? delItem = await DbHelper.RemoverItem(bot.BotName, "WORKSHOP", steamAlvo).ConfigureAwait(false);
 
 			if (!delItem.HasValue) {
 				return null;

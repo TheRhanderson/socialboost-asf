@@ -21,7 +21,7 @@ internal static class SharedFav {
 			return null;
 		}
 
-		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "SHAREDFAV", id).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true) {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
@@ -67,7 +67,7 @@ internal static class SharedFav {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
 
-		bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+		bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SHAREDFAV", id).ConfigureAwait(false);
 
 		if (!salvaItem.HasValue) {
 			return null;

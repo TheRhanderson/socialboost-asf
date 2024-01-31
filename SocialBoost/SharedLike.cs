@@ -21,7 +21,7 @@ internal static class SharedLike {
 			return null;
 		}
 
-		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "SHAREDLIKE", id).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true) {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
@@ -51,7 +51,7 @@ internal static class SharedLike {
 		{ "sessionid", sessionId }
 		};
 
-		bool? verificaSharedFav = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+		bool? verificaSharedFav = await DbHelper.VerificarEnvioItem(bot.BotName, "SHAREDFAV", id).ConfigureAwait(false);
 		// verificamos se esse bot já enviou favoritos antes, pois então não precisamos 'visitar' a página novamente.
 		if (verificaSharedFav == false) {
 			HtmlDocumentResponse? response = await VisualizarPagina(bot, requestViewPage).ConfigureAwait(false);
@@ -66,7 +66,7 @@ internal static class SharedLike {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
 		}
 
-		bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
+		bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SHAREDLIKE", id).ConfigureAwait(false);
 
 		if (!salvaItem.HasValue) {
 			return null;

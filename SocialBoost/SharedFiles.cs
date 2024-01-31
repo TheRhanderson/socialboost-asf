@@ -23,8 +23,8 @@ internal static class SharedFiles {
 			return null;
 		}
 
-		bool? botUtilizadoAnteriormente1 = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
-		bool? botUtilizadoAnteriormente2 = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente1 = await DbHelper.VerificarEnvioItem(bot.BotName, "SHAREDLIKE", id).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente2 = await DbHelper.VerificarEnvioItem(bot.BotName, "SHAREDFAV", id).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente1 == true && botUtilizadoAnteriormente2 == true) {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
@@ -84,7 +84,7 @@ internal static class SharedFiles {
 
 			if (postLike) {
 
-				bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
+				bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SHAREDLIKE", id).ConfigureAwait(false);
 				if (!salvaItem.HasValue) {
 					return null;
 				}
@@ -99,7 +99,7 @@ internal static class SharedFiles {
 
 			if (postFav) {
 
-				bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SharedFav", id).ConfigureAwait(false);
+				bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "SHAREDFAV", id).ConfigureAwait(false);
 				if (!salvaItem.HasValue) {
 					return null;
 				}

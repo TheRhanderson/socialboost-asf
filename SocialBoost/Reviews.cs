@@ -20,7 +20,7 @@ internal static class Reviews {
 			return null;
 		}
 
-		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
+		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "REVIEWS", idreview).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true && action != "3") {
 			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview}");
@@ -95,14 +95,14 @@ internal static class Reviews {
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{tipoReview.ToUpperInvariant()} => (OK)");
 
 		if (dataToUse != data3) {
-			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
+			bool? salvaItem = await DbHelper.AdicionarEnvioItem(bot.BotName, "REVIEWS", idreview).ConfigureAwait(false);
 
 			if (!salvaItem.HasValue) {
 				return null;
 			}
 
 		} else if (dataToUse == data3) {
-			bool? delItem = await DbHelper.RemoverItem(bot.BotName, "Reviews", idreview).ConfigureAwait(false);
+			bool? delItem = await DbHelper.RemoverItem(bot.BotName, "REVIEWS", idreview).ConfigureAwait(false);
 
 			if (!delItem.HasValue) {
 				return null;
