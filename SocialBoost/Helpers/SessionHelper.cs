@@ -2,16 +2,16 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Core;
 using ArchiSteamFarm.Web.Responses;
 using System.Text.RegularExpressions;
+using static ArchiSteamFarm.Steam.Integration.ArchiWebHandler;
 
 namespace SocialBoost.Helpers;
 internal static class SessionHelper {
 	public static async Task<string?> FetchSessionID(Bot bot) {
-		CookieCollection cc = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookies(ArchiWebHandler.SteamStoreURL);
+		CookieCollection cc = bot.ArchiWebHandler.WebBrowser.CookieContainer.GetCookies(SteamStoreURL);
 		Cookie? sessionIdCookie = cc.Cast<Cookie>().FirstOrDefault(c => c.Name.Equals("sessionid", StringComparison.OrdinalIgnoreCase));
 
 		return sessionIdCookie != null
@@ -22,7 +22,7 @@ internal static class SessionHelper {
 	internal static async Task<string?> FetchReviewID(string urlReview) {
 
 		Uri uri2 = new(urlReview);
-		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: SteamCommunityURL).ConfigureAwait(false);
 
 		if (response == null || response.Content?.Body == null) {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
@@ -47,7 +47,7 @@ internal static class SessionHelper {
 
 	internal static async Task<string?> FetchAppIDShared(string urlReview) {
 		Uri uri2 = new(urlReview);
-		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: SteamCommunityURL).ConfigureAwait(false);
 
 		if (response == null || response.Content?.Body == null) {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
@@ -70,7 +70,7 @@ internal static class SessionHelper {
 
 	internal static async Task<string?> FetchSteamID64(string urlReview) {
 		Uri uri2 = new(urlReview);
-		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: SteamCommunityURL).ConfigureAwait(false);
 
 		if (response == null || response.Content?.Body == null) {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
