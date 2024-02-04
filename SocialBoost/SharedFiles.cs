@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web.Responses;
 using SocialBoost.Helpers;
+using static ArchiSteamFarm.Steam.Integration.ArchiWebHandler;
 
 namespace SocialBoost;
 internal static class SharedFiles {
@@ -49,22 +49,19 @@ internal static class SharedFiles {
 			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
 		}
 
-		Uri request = new(ArchiWebHandler.SteamCommunityURL, "/sharedfiles/voteup");
-		Uri request2 = new(ArchiWebHandler.SteamCommunityURL, "/sharedfiles/favorite");
-		Uri requestViewPage = new(ArchiWebHandler.SteamCommunityURL, $"/sharedfiles/filedetails/?id={id}");
+		Uri request = new(SteamCommunityURL, "/sharedfiles/voteup");
+		Uri request2 = new(SteamCommunityURL, "/sharedfiles/favorite");
+		Uri requestViewPage = new(SteamCommunityURL, $"/sharedfiles/filedetails/?id={id}");
 
 
-		Dictionary<string, string> data1 = new(2)
+		Dictionary<string, string> data1 = new(1)
 {
-		{ "id", id },
-		{ "sessionid", sessionId }
-		};
+		{ "id", id }};
 
-		Dictionary<string, string> data2 = new(3)
+		Dictionary<string, string> data2 = new(2)
 		{
 		{ "id", id },
-		{ "appid", appID },
-		{ "sessionid", sessionId }
+		{ "appid", appID }
 		};
 
 		if (botUtilizadoAnteriormente1.HasValue && !botUtilizadoAnteriormente1.Value &&
@@ -80,7 +77,7 @@ internal static class SharedFiles {
 		bool postFav = false;
 
 		if (validoLikes == 1 && botUtilizadoAnteriormente1 == false) {
-			postLike = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, referer: requestViewPage).ConfigureAwait(false);
+			postLike = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data1, session: ESession.Lowercase, referer: requestViewPage).ConfigureAwait(false);
 
 			if (postLike) {
 
@@ -95,7 +92,7 @@ internal static class SharedFiles {
 		}
 
 		if (botUtilizadoAnteriormente2 == false) {
-			postFav = await bot.ArchiWebHandler.UrlPostWithSession(request2, data: data2, referer: requestViewPage).ConfigureAwait(false);
+			postFav = await bot.ArchiWebHandler.UrlPostWithSession(request2, data: data2, session: ESession.Lowercase, referer: requestViewPage).ConfigureAwait(false);
 
 			if (postFav) {
 
@@ -118,7 +115,7 @@ internal static class SharedFiles {
 	}
 
 	internal static async Task<HtmlDocumentResponse?> VisualizarPagina(Bot bot, Uri requestViewPage) {
-		HtmlDocumentResponse? response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(requestViewPage, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(requestViewPage, referer: SteamCommunityURL).ConfigureAwait(false);
 		return response;
 	}
 

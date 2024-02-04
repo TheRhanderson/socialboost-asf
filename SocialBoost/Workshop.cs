@@ -7,6 +7,7 @@ using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
 using SocialBoost.Helpers;
+using static ArchiSteamFarm.Steam.Integration.ArchiWebHandler;
 
 namespace SocialBoost;
 internal static class Workshop {
@@ -33,24 +34,19 @@ internal static class Workshop {
 			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
 		}
 
-		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
+		//string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|WORKSHOP|{(action == "1" ? "FOLLOW" : "UNFOLLOW")} => {steamAlvo} (Enviando)");
-
-		if (string.IsNullOrEmpty(sessionId)) {
-			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
-		}
 
 		Uri request = new($"{urlPerfil}/followuser");
 		Uri request2 = new($"{urlPerfil}/unfollowuser");
 		Uri requestViewPage = new($"{urlPerfil}/myworkshopfiles/");
 
-		Dictionary<string, string> data = new(2)
+		Dictionary<string, string> data = new(1)
 		{
-		{ "steamid", steamAlvo },
-		{ "sessionid", sessionId }
+		{ "steamid", steamAlvo }
 		};
 
-		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(action == "1" ? request : request2, data: data, referer: requestViewPage).ConfigureAwait(false);
+		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(action == "1" ? request : request2, data: data, session: ESession.Lowercase, referer: requestViewPage).ConfigureAwait(false);
 
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");

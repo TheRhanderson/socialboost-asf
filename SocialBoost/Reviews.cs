@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
 using SocialBoost.Helpers;
+using static ArchiSteamFarm.Steam.Integration.ArchiWebHandler;
 
 namespace SocialBoost;
 internal static class Reviews {
@@ -38,35 +38,28 @@ internal static class Reviews {
 			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
 		}
 
-		Uri request = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/rate/{idreview}");
-		Uri request2 = new(ArchiWebHandler.SteamCommunityURL, $"/userreviews/votetag/{idreview}");
+		Uri request = new(SteamCommunityURL, $"/userreviews/rate/{idreview}");
+		Uri request2 = new(SteamCommunityURL, $"/userreviews/votetag/{idreview}");
 		Uri requestViewPage = new(url);
 
-		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
+		//string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|REVIEWS|{(action == "1" ? "UTIL" : (action == "2" ? "ENGRACADO" : "NAO UTIL"))} => (Enviando)");
 
-		if (string.IsNullOrEmpty(sessionId)) {
-			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
-		}
+		Dictionary<string, string> data1 = new(1)
+		{
+		{ "rateup", "true" }
+		};
 
-		Dictionary<string, string> data1 = new(2)
-		   {
-		{ "rateup", "true" },
-		{ "sessionid", sessionId }
-	};
-
-		Dictionary<string, string> data2 = new(3)
+		Dictionary<string, string> data2 = new(2)
 		{
 		{ "rateup", "true" },
-		{ "tagid", "1" },
-		{ "sessionid", sessionId }
-	};
+		{ "tagid", "1" }
+		};
 
-		Dictionary<string, string> data3 = new(2)
+		Dictionary<string, string> data3 = new(1)
 		{
-		{ "rateup", "false" },
-		{ "sessionid", sessionId }
-	};
+		{ "rateup", "false" }
+		};
 
 		bool postSuccess;
 		Uri requestToUse;
@@ -90,7 +83,7 @@ internal static class Reviews {
 			return null;
 		}
 
-		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(requestToUse, data: dataToUse, referer: requestViewPage).ConfigureAwait(false);
+		postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(requestToUse, data: dataToUse, session: ESession.Lowercase, referer: requestViewPage).ConfigureAwait(false);
 
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");

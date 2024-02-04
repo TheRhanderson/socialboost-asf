@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Core;
-using ArchiSteamFarm.Steam.Integration;
 using ArchiSteamFarm.Steam.Interaction;
 using ArchiSteamFarm.Steam;
 using ArchiSteamFarm.Localization;
 using ArchiSteamFarm.Web.Responses;
 using SocialBoost.Helpers;
+using static ArchiSteamFarm.Steam.Integration.ArchiWebHandler;
 
 namespace SocialBoost;
 internal static class SharedFav {
@@ -35,21 +35,16 @@ internal static class SharedFav {
 		//	return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);   /// Isso funciona com contas limitadas.
 		//}
 
-		string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
+		//string? sessionId = await FetchSessionID(bot).ConfigureAwait(false);
 		bot.ArchiLogger.LogGenericInfo($"SocialBoost|SHAREDFILES|FAV => {id} (Enviando)");
 
-		if (string.IsNullOrEmpty(sessionId)) {
-			return Commands.FormatBotResponse(Strings.BotLoggedOff, bot.BotName);
-		}
+		Uri request = new(SteamCommunityURL, "/sharedfiles/favorite");
+		Uri requestViewPage = new(SteamCommunityURL, $"/sharedfiles/filedetails/?id={id}");
 
-		Uri request = new(ArchiWebHandler.SteamCommunityURL, "/sharedfiles/favorite");
-		Uri requestViewPage = new(ArchiWebHandler.SteamCommunityURL, $"/sharedfiles/filedetails/?id={id}");
-
-		Dictionary<string, string> data = new(3)
+		Dictionary<string, string> data = new(2)
 		{
 		{ "id", id },
-		{ "appid", appID },
-		{ "sessionid", sessionId }
+		{ "appid", appID }
 		};
 
 		bool? verificaSharedLike = await DbHelper.VerificarEnvioItem(bot.BotName, "SharedLike", id).ConfigureAwait(false);
@@ -61,7 +56,7 @@ internal static class SharedFav {
 			}
 		}
 
-		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data, referer: requestViewPage).ConfigureAwait(false);
+		bool postSuccess = await bot.ArchiWebHandler.UrlPostWithSession(request, data: data, session: ESession.Lowercase, referer: requestViewPage).ConfigureAwait(false);
 
 		if (!postSuccess) {
 			bot.ArchiLogger.LogGenericError("Erro ao executar POST");
@@ -79,7 +74,7 @@ internal static class SharedFav {
 	}
 
 	internal static async Task<HtmlDocumentResponse?> VisualizarPagina(Bot bot, Uri requestViewPage) {
-		HtmlDocumentResponse? response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(requestViewPage, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
+		HtmlDocumentResponse? response = await bot.ArchiWebHandler.UrlGetToHtmlDocumentWithSession(requestViewPage, referer: SteamCommunityURL).ConfigureAwait(false);
 		return response;
 	}
 
