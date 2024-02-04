@@ -37,7 +37,9 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 
 		return args[0].ToUpperInvariant() switch {
 			"SHAREDLIKE" when args.Length > 2 => await SharedLike.EnviarLikeSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
+			"CSHAREDLIKE" when args.Length > 2 => await CSharedLike.EnviarLikeSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"SHAREDFAV" when args.Length > 2 => await SharedFav.EnviarFavSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
+			"CSHAREDFAV" when args.Length > 2 => await CSharedFav.EnviarFavSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"SHAREDFILES" when args.Length > 2 => await SharedFiles.EnviarSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"RATEREVIEW" when args.Length > 3 => await Reviews.EnviarReviews(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
 			"WORKSHOP" when args.Length > 3 => await Workshop.SeguirOficinaID64(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
