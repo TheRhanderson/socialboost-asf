@@ -13,6 +13,8 @@ For sharedfiles media, the following commands are available:
 - **SHAREDLIKE [Bots] [Id]:** Sends likes to a specific sharedfiles URL.
 - **SHAREDFAV [Bots] [Id]:** Sends favorites to a specific sharedfiles URL.
 - **SHAREDFILES [Bots] [Id]:** Sends likes and favorites to a specific sharedfiles URL.
+- **CSHAREDLIKE [Id] [Amount]:** Sends a custom number of likes to a sharedfiles URL.
+- **CSHAREDFAV [Id] [Amount]:** Sends a custom number of favorites to a sharedfiles URL.
 
 Example usage: `SHAREDFILES ASF 3142209500` (The Id 3142209500 refers to the end of the URL).
 
@@ -29,9 +31,10 @@ Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommend
 ### Steam Workshop
 To follow a Steam profile's Workshop, use the command:
 
-- **WORKSHOP [Bots] [Profile Url] [Type]:** Starts following/unfollowing the Workshop of a specific Steam profile. Limited accounts are compatible.
+- **WORKSHOP [Bots] [Profile Url] [Type]:** Starts following/unfollowing a Steam profile's Workshop. Limited accounts are compatible.
   - Type 1 (Follow)
   - Type 2 (Unfollow)
+- **CWORKSHOP [Profile Url] [Type] [Amount]:** Starts following/unfollowing a Steam profile's Workshop using a specific number of bot accounts.
 
 Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (The URL should be the same as used to visit the profile in the browser. This will follow the Steam profile.).
 
