@@ -49,7 +49,7 @@ Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (Th
  
 ## Privacy and Transparency of the Plugin
 
-Our plugin utilizes a straightforward authentication process with our server, ensuring that no sensitive data, including account names, logins, passwords, or even IP addresses, is shared. The data collection is solely aimed at understanding how users interact with the plugin. Feel free to recompile without this functionality if you don't want to share it.
+SocialBoost informs the developer with insight into the commands utilized by users. By using this plugin, you consent to share the following data: computer name and executed command. Data collection is solely intended to understand how our project is utilized by real users. No additional data, such as account names or IP addresses, is stored. Feel free to recompile without this functionality if you don't want to share it.
 
 ## How to Install
 * Visit the [releases](https://github.com/TheRhanderson/socialboost-asf/releases) page, download the latest available version, extract it into the ``/plugins`` folder of your ASF, and restart the process. Have fun!
