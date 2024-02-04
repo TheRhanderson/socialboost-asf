@@ -41,6 +41,7 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 			"SHAREDFILES" when args.Length > 2 => await SharedFiles.EnviarSharedfiles(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			"RATEREVIEW" when args.Length > 3 => await Reviews.EnviarReviews(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
 			"WORKSHOP" when args.Length > 3 => await Workshop.SeguirOficinaID64(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
+			"CWORKSHOP" when args.Length > 3 => await CWorkshop.SeguirOficinaID64(access, steamID, args[1], args[2], args[3]).ConfigureAwait(false),
 			"CHECKBOOST" when args.Length > 2 => await CheckBoost.VerificarEnvioItemDisp(access, steamID, args[1], args[2]).ConfigureAwait(false),
 			_ => null
 		};

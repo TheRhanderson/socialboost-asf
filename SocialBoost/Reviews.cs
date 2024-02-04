@@ -23,7 +23,11 @@ internal static class Reviews {
 		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "REVIEWS", idreview).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true && action != "3") {
-			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview}");
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview} — Esta conta já foi usada antes!");
+		}
+
+		if (botUtilizadoAnteriormente == false && action == "3") {
+			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview} — Bot nunca avaliou este review!");
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {
