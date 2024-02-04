@@ -43,7 +43,7 @@ Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (Th
   * The database keeps track of accounts used for specific submissions, ensuring they are not reused for the same type of submission in the future.
 * Use it to check how many bots can still submit for a given submission (Sharedfiles, Game Review, Workshop). The expected syntax is: ``CHECKBOOST [Type] [Id]``.
    * ``[Type]`` can be: sharedlike, sharedfav, workshop, reviews
-   * Sharedlike and Sharedfav => expect the same ID that you find at the end of the URL.
+   * Sharedlike and Sharedfav => Expected the same ID that you find at the end of the URL.
    * Workshop => Expected the SteamID64 of the profile and not the full URL.
    * Reviews => Expected the review ID and not the full URL.
  
