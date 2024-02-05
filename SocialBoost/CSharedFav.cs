@@ -25,11 +25,11 @@ internal static class CSharedFav {
 		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "SHAREDFAV", id).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true) {
-			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {id}");
+			return null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {
-			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
+			return null;
 		}
 
 		//if (bot.IsAccountLimited) {
