@@ -23,19 +23,19 @@ internal static class CReviews {
 		bool? botUtilizadoAnteriormente = await DbHelper.VerificarEnvioItem(bot.BotName, "REVIEWS", idreview).ConfigureAwait(false);
 
 		if (botUtilizadoAnteriormente == true && action != "3") {
-			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview} — Esta conta já foi usada antes!");
+			return null;
 		}
 
 		if (botUtilizadoAnteriormente == false && action == "3") {
-			return bot.Commands.FormatBotResponse($"{Strings.WarningFailed} — ID: {idreview} — Bot nunca avaliou este review!");
+			return null;
 		}
 
 		if (!bot.IsConnectedAndLoggedOn) {
-			return bot.Commands.FormatBotResponse(Strings.BotNotConnected);
+			return null;
 		}
 
 		if (bot.IsAccountLimited) {
-			return bot.Commands.FormatBotResponse(Strings.BotAccountLimited);
+			return null;
 		}
 
 		Uri request = new(SteamCommunityURL, $"/userreviews/rate/{idreview}");
