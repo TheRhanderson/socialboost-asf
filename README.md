@@ -1,4 +1,5 @@
----
+![SOCIALBOOST](https://github.com/TheRhanderson/socialboost-asf/assets/24517851/2623fdd1-80b3-4f50-8de8-5355094fb972)
+
 # SocialBoost - Boosting Interactions on ArchiSteamFarm
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/TheRhanderson/socialboost-asf/total)
 [![GitHub Release](https://img.shields.io/github/v/release/TheRhanderson/socialboost-asf?logo=github)](https://github.com/TheRhanderson/socialboost-asf/releases)
