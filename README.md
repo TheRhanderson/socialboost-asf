@@ -46,8 +46,8 @@ Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (Th
 * Use it to check how many bots can still submit for a given submission (Sharedfiles, Game Review, Workshop). The expected syntax is: ``CHECKBOOST [Type] [Id]``.
    * ``[Type]`` can be: sharedlike, sharedfav, workshop, reviews
    * Sharedlike and Sharedfav => Expected the same ID that you find at the end of the URL.
-   * Workshop => Expected the SteamID64 of the profile and not the full URL.
-   * Reviews => Expected the review ID and not the full URL.
+   * Workshop => Expected the Steam Profile URL of the profile, same as in the browser.
+   * Reviews => Expected the Review URL, same as in the browser.
  
 ## Privacy and Transparency of the Plugin
 
