@@ -25,6 +25,7 @@ For game reviews, the available command is:
   - Type 1 (Helpful)
   - Type 2 (Funny)
   - Type 3 (Not Helpful)
+- **CRATEREVIEW [Review Url] [Type] [Amount]:** Sends a recommendation for a game review using a specific number of bot accounts.
 
 Example usage: `RATEREVIEW ASF https://steamcommunity.com/id/xxxxxxxxx/recommended/739630 1` (The URL refers to the game review, and 1 indicates a Helpful recommendation).
 
