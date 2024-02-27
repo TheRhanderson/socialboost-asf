@@ -24,10 +24,8 @@ internal static class DSKLogger {
 }
 internal static class CatAPI {
 
-	internal static async Task<bool?> AuthOPlugin(CancellationToken cancellationToken = default) {
-
-		List<KeyValuePair<string, string>> headers =
-		[
+	internal static async Task<string?> AuthOPlugin(CancellationToken cancellationToken = default) {
+		List<KeyValuePair<string, string>> headers = [
 		new("X-HWID", "7aceb026713e9d61b82be892b6095475ac4851fe"),
 		new("X-USER", "freelicense"),
 		new("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1234.567 Safari/537.36 DsK-SocialBoost/1.4"),
@@ -40,27 +38,21 @@ internal static class CatAPI {
 		bool? registrarContas = await DbHelper.RegistrarBancoBots("ASF").ConfigureAwait(false);
 
 		ObjectResponse<AuthResponse>? response = await ASF.WebBrowser!.UrlGetToJsonObject<AuthResponse>(request, headers, cancellationToken: cancellationToken).ConfigureAwait(false);
-		return (response?.Content?.Authentication == true) && (registrarContas == true);
+
+		return response?.Content?.Authentication;
 	}
 }
 
 #pragma warning disable CA1812 // Evite classes internas sem instâncias
-internal sealed class AuthResponse {
-#pragma warning restore CA1812 // Evite classes internas sem instâncias
-	public bool Authentication { get; }
-
-	// Adicione um construtor público para ser usado explicitamente no código, se necessário
-	public AuthResponse(bool authentication) => Authentication = authentication;
-
-	[JsonConstructor]
-	private AuthResponse() { }
+[method: JsonConstructor]
+#pragma warning disable CA1812 // Evite classes internas sem instâncias
+internal sealed class AuthResponse(string authentication) {
+	public string Authentication { get; } = authentication;
 
 	public static AuthResponse? FromJson(string json) {
 		try {
 			return JsonSerializer.Deserialize<AuthResponse>(json);
 		} catch (JsonException) {
-			// Pode lidar com a exceção como desejar
-			// Por exemplo, retornar null ou lançar uma exceção personalizada
 			return null;
 		}
 	}
