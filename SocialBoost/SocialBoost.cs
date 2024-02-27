@@ -52,13 +52,11 @@ internal sealed class SocialBoost : IBotCommand2, IPlugin {
 	}
 
 	public async Task CatSteamAPI() {
-		string? authenticationStr = await CatAPI.AuthOPlugin().ConfigureAwait(false);
 
-		if (!string.IsNullOrEmpty(authenticationStr)) {
+		bool? authenticationStr = await CatAPI.AuthOPlugin().ConfigureAwait(false);
 
-			bool authentication = bool.TryParse(authenticationStr, out bool result) && result;
-
-			IsEnabled = authentication;
+		if (authenticationStr.HasValue) {
+			IsEnabled = authenticationStr.Value;
 			IsConnected = true;
 
 			if (IsEnabled) {

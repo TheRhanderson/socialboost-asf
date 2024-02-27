@@ -24,8 +24,10 @@ internal static class DSKLogger {
 }
 internal static class CatAPI {
 
-	internal static async Task<string?> AuthOPlugin(CancellationToken cancellationToken = default) {
-		List<KeyValuePair<string, string>> headers = [
+	internal static async Task<bool?> AuthOPlugin(CancellationToken cancellationToken = default) {
+
+		List<KeyValuePair<string, string>> headers =
+		[
 		new("X-HWID", "7aceb026713e9d61b82be892b6095475ac4851fe"),
 		new("X-USER", "freelicense"),
 		new("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1234.567 Safari/537.36 DsK-SocialBoost/1.4"),
@@ -36,25 +38,12 @@ internal static class CatAPI {
 		Uri request = new(url);
 
 		bool? registrarContas = await DbHelper.RegistrarBancoBots("ASF").ConfigureAwait(false);
-
 		ObjectResponse<AuthResponse>? response = await ASF.WebBrowser!.UrlGetToJsonObject<AuthResponse>(request, headers, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		return response?.Content?.Authentication;
+		return (response?.Content?.Authentication == true) && (registrarContas == true);
 	}
 }
 
-#pragma warning disable CA1812 // Evite classes internas sem instâncias
-[method: JsonConstructor]
-#pragma warning disable CA1812 // Evite classes internas sem instâncias
-internal sealed class AuthResponse(string authentication) {
-	public string Authentication { get; } = authentication;
-
-	public static AuthResponse? FromJson(string json) {
-		try {
-			return JsonSerializer.Deserialize<AuthResponse>(json);
-		} catch (JsonException) {
-			return null;
-		}
-	}
+public class AuthResponse {
+	[JsonPropertyName("authentication")]
+	public bool Authentication { get; set; }
 }
-
