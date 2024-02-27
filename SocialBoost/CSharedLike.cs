@@ -112,7 +112,7 @@ internal static class CSharedLike {
 			return access >= EAccess.Owner ? FormatBotResponse("Não há bots online suficientes!", "SocialBoost") : null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"CSharedfiles-LIKE-{argument}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"CSharedfiles-LIKE-{argument}").ConfigureAwait(false);
 
 		List<string?> responses = []; // Lista para armazenar respostas bem-sucedidas
 		int enviosBemSucedidos = 0; // Contador de envios bem-sucedidos

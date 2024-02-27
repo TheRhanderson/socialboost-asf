@@ -127,7 +127,7 @@ internal static class Reviews {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"RATEREVIEW-{(argument2 == "1" ? "UTIL" : (argument2 == "2" ? "ENGRACADO" : "NAO UTIL"))}-{argument}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"RATEREVIEW-{(argument2 == "1" ? "UTIL" : (argument2 == "2" ? "ENGRACADO" : "NAO UTIL"))}-{argument}").ConfigureAwait(false);
 
 		string? argument3 = await SessionHelper.FetchReviewID(argument).ConfigureAwait(false);
 

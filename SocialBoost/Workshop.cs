@@ -97,7 +97,7 @@ internal static class Workshop {
 			return null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"Workshop-{(argument2 == "1" ? "FOLLOW" : "UNFOLLOW")}-{argument3}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"Workshop-{(argument2 == "1" ? "FOLLOW" : "UNFOLLOW")}-{argument3}").ConfigureAwait(false);
 
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => SeguirOficinaPerfilSteam(bot, Commands.GetProxyAccess(bot, access, steamID), argument, argument3, argument2))).ConfigureAwait(false);
 		List<string?> responses = new(results.Where(result => !string.IsNullOrEmpty(result)));

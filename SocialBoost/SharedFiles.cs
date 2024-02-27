@@ -142,7 +142,7 @@ internal static class SharedFiles {
 			return Commands.FormatBotResponse("Erro ao determinar appid do sharedfiles", firstBot.BotName);
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"Sharedfiles-LIKE|FAV-{argument}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"Sharedfiles-LIKE|FAV-{argument}").ConfigureAwait(false);
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => EnviarSharedfiles(bot, Commands.GetProxyAccess(bot, access, steamID), argument, argument2))).ConfigureAwait(false);
 		List<string?> responses = new(results.Where(result => !string.IsNullOrEmpty(result)));
 		ASF.ArchiLogger.LogGenericInfo($"Envio concluído! Criado por @therhanderson");

@@ -91,7 +91,7 @@ internal static class SharedLike {
 			return access >= EAccess.Owner ? FormatBotResponse(Strings.BotNotFound, botNames) : null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"Sharedfiles-LIKE-{argument}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"Sharedfiles-LIKE-{argument}").ConfigureAwait(false);
 		IList<string?> results = await Utilities.InParallel(bots.Select(bot => EnviarLikeSharedfiles(bot, Commands.GetProxyAccess(bot, access, steamID), argument))).ConfigureAwait(false);
 		List<string?> responses = new(results.Where(result => !string.IsNullOrEmpty(result)));
 		ASF.ArchiLogger.LogGenericInfo($"Envio concluído! Criado por @therhanderson");

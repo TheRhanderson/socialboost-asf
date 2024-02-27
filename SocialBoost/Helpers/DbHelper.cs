@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Steam;
-using Newtonsoft.Json;
 
 namespace SocialBoost.Helpers;
 internal sealed class DbHelper {
+
+	// Crie uma instância reutilizável de JsonSerializerOptions
+	private static readonly JsonSerializerOptions JsonSerializerOptions = new() {
+		WriteIndented = true
+	};
 
 	private const string FilePath = "plugins/socialboost-db.json";
 
@@ -15,8 +20,7 @@ internal sealed class DbHelper {
 		string filePath = FilePath;
 		string jsonContent = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
-		// Deserializa o conteúdo para um Dictionary
-		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
+		Dictionary<string, BotData> data = JsonSerializer.Deserialize<Dictionary<string, BotData>>(jsonContent)
 										  ?? [];
 
 		if (!data.TryGetValue(botName, out BotData? botData)) {
@@ -36,8 +40,9 @@ internal sealed class DbHelper {
 
 		string filePath = FilePath;
 		string jsonContent = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
-										  ?? [];
+
+		Dictionary<string, BotData> data = JsonSerializer.Deserialize<Dictionary<string, BotData>>(jsonContent)
+								  ?? [];
 
 		// Verifica se o bot já existe no dicionário, se não, adiciona
 		if (!data.TryGetValue(botName, out BotData? botData)) {
@@ -51,7 +56,9 @@ internal sealed class DbHelper {
 		}
 
 		reviewList.Add(idToCheck);
-		await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(data, Formatting.Indented)).ConfigureAwait(false);
+
+		string updatedJsonContent = JsonSerializer.Serialize(data, JsonSerializerOptions);
+		await File.WriteAllTextAsync(filePath, updatedJsonContent).ConfigureAwait(false);
 
 		return true;
 	}
@@ -60,8 +67,9 @@ internal sealed class DbHelper {
 
 		string filePath = FilePath;
 		string jsonContent = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
-										  ?? [];
+
+		Dictionary<string, BotData> data = JsonSerializer.Deserialize<Dictionary<string, BotData>>(jsonContent)
+								  ?? [];
 
 		// Verifica se o bot existe no dicionário
 		if (data.TryGetValue(botName, out BotData? botData)) {
@@ -69,7 +77,10 @@ internal sealed class DbHelper {
 			List<string> reviewList = GetReviewList(boostType, botData);
 
 			if (reviewList.Remove(idToRemove)) {
-				await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(data, Formatting.Indented)).ConfigureAwait(false);
+
+				string jsonString = JsonSerializer.Serialize(data, JsonSerializerOptions);
+				await File.WriteAllTextAsync(filePath, jsonString).ConfigureAwait(false);
+
 				return true;
 			}
 		}
@@ -86,14 +97,17 @@ internal sealed class DbHelper {
 
 		if (!File.Exists(FilePath)) {
 			Dictionary<string, BotData> initialData = [];
-			await File.WriteAllTextAsync(FilePath, JsonConvert.SerializeObject(initialData, Formatting.Indented)).ConfigureAwait(false);
+
+			string jsonString = JsonSerializer.Serialize(initialData, JsonSerializerOptions);
+			await File.WriteAllTextAsync(FilePath, jsonString).ConfigureAwait(false);
+
 		}
 
 		string caminhoDB = FilePath;
 		string jsonContent = await File.ReadAllTextAsync(caminhoDB).ConfigureAwait(false);
 
-		Dictionary<string, BotData> data = JsonConvert.DeserializeObject<Dictionary<string, BotData>>(jsonContent)
-										  ?? [];
+		Dictionary<string, BotData> data = JsonSerializer.Deserialize<Dictionary<string, BotData>>(jsonContent)
+								  ?? [];
 		foreach (Bot bot in bots) {
 			string botName = bot.BotName;
 			if (!data.TryGetValue(botName, out BotData? botData)) {
@@ -102,8 +116,9 @@ internal sealed class DbHelper {
 			}
 		}
 
-		string updatedJsonContent = JsonConvert.SerializeObject(data, Formatting.Indented);
+		string updatedJsonContent = JsonSerializer.Serialize(data, JsonSerializerOptions);
 		await File.WriteAllTextAsync(caminhoDB, updatedJsonContent).ConfigureAwait(false);
+
 		return true;
 
 	}

@@ -122,7 +122,7 @@ internal static class CSharedFav {
 			return Commands.FormatBotResponse("Erro ao determinar appid do sharedfiles", firstBot.BotName);
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"CSharedfiles-FAV-{argument}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"CSharedfiles-FAV-{argument}").ConfigureAwait(false);
 
 		List<string?> responses = []; // Lista para armazenar respostas bem-sucedidas
 		int enviosBemSucedidos = 0; // Contador de envios bem-sucedidos

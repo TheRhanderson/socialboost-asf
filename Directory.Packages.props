@@ -2,5 +2,6 @@
   <Import Project="ArchiSteamFarm/Directory.Packages.props" />
   <ItemGroup>
     <PackageVersion Include="AngleSharp" Version="1.0.7" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.2" />
   </ItemGroup>
 </Project>

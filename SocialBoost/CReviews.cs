@@ -157,7 +157,7 @@ internal static class CReviews {
 			return Commands.FormatBotResponse("Erro ao determinar id de review", firstBot.BotName);
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"CRATEREVIEW-{(argument2 == "1" ? "UTIL" : (argument2 == "2" ? "ENGRACADO" : "NAO UTIL"))}-{argument}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"CRATEREVIEW-{(argument2 == "1" ? "UTIL" : (argument2 == "2" ? "ENGRACADO" : "NAO UTIL"))}-{argument}").ConfigureAwait(false);
 
 
 		List<string?> responses = []; // Lista para armazenar respostas bem-sucedidas

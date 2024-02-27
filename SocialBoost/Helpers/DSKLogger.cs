@@ -5,34 +5,34 @@ using ArchiSteamFarm.Web.Responses;
 using ArchiSteamFarm.Core;
 using System.Threading;
 using System.Text.Json;
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SocialBoost.Helpers;
 internal static class DSKLogger {
 
-	internal static async Task<bool?> CompartilharAtividade(string activityLog) {
+	internal static async Task CompartilharAtividade(string activityLog) {
 		string computerName = Environment.MachineName;
 		Uri uri2 = new($"https://rhanderson.com.br/argfarm/auth/logger.php?user={computerName}&log={activityLog}");
 		HtmlDocumentResponse? response = await ASF.WebBrowser!.UrlGetToHtmlDocument(uri2, referer: ArchiWebHandler.SteamCommunityURL).ConfigureAwait(false);
 
 		if (response == null) {
 			ASF.ArchiLogger.LogGenericError("A requisição não retornou uma resposta válida.");
-			return false;
 		}
-		return true;
+		// Não há retorno aqui, a função apenas executa a requisição
 	}
 }
 internal static class CatAPI {
 
 	internal static async Task<bool?> AuthOPlugin(CancellationToken cancellationToken = default) {
-		//ArgumentNullException.ThrowIfNull(webBrowser);
+		// Seu código existente...
 
-		List<KeyValuePair<string, string>> headers = [
-			new("X-HWID", "7aceb026713e9d61b82be892b6095475ac4851fe"),
-			new("X-USER", "freelicense"),
-			new("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1234.567 Safari/537.36 DsK-SocialBoost/1.4"),
-			new("X-MCME", Environment.MachineName)
+		List<KeyValuePair<string, string>> headers =
+		[
+		new("X-HWID", "7aceb026713e9d61b82be892b6095475ac4851fe"),
+		new("X-USER", "freelicense"),
+		new("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.1234.567 Safari/537.36 DsK-SocialBoost/1.4"),
+		new("X-MCME", Environment.MachineName)
 	];
 
 		string url = "https://dskillers.ovh/argfarm/auth/genasfsession.php";
@@ -45,17 +45,25 @@ internal static class CatAPI {
 	}
 }
 
-
-#pragma warning disable CA1812 // False positive, the class is used during json deserialization
+#pragma warning disable CA1812 // Evite classes internas sem instâncias
 internal sealed class AuthResponse {
-	[JsonProperty("authentication", Required = Required.Always)]
-	internal readonly bool Authentication;
+#pragma warning restore CA1812 // Evite classes internas sem instâncias
+	public bool Authentication { get; }
 
 	// Adicione um construtor público para ser usado explicitamente no código, se necessário
 	public AuthResponse(bool authentication) => Authentication = authentication;
 
 	[JsonConstructor]
 	private AuthResponse() { }
+
+	public static AuthResponse? FromJson(string json) {
+		try {
+			return JsonSerializer.Deserialize<AuthResponse>(json);
+		} catch (JsonException) {
+			// Pode lidar com a exceção como desejar
+			// Por exemplo, retornar null ou lançar uma exceção personalizada
+			return null;
+		}
+	}
 }
 
-#pragma warning restore CA1812 // False positive, the class is used during json deserialization

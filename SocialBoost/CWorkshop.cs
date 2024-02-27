@@ -116,7 +116,7 @@ internal static class CWorkshop {
 			return null;
 		}
 
-		bool? logger = await DSKLogger.CompartilharAtividade($"CWorkshop-{(argument2 == "1" ? "FOLLOW" : "UNFOLLOW")}-{argument3}").ConfigureAwait(false);
+		await DSKLogger.CompartilharAtividade($"CWorkshop-{(argument2 == "1" ? "FOLLOW" : "UNFOLLOW")}-{argument3}").ConfigureAwait(false);
 		List<string?> responses = []; // Lista para armazenar respostas bem-sucedidas
 		int enviosBemSucedidos = 0; // Contador de envios bem-sucedidos
 
