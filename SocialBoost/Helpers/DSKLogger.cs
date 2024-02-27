@@ -25,7 +25,6 @@ internal static class DSKLogger {
 internal static class CatAPI {
 
 	internal static async Task<bool?> AuthOPlugin(CancellationToken cancellationToken = default) {
-		// Seu código existente...
 
 		List<KeyValuePair<string, string>> headers =
 		[
