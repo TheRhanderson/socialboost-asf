@@ -44,7 +44,7 @@ Example usage: `WORKSHOP ASF https://steamcommunity.com/id/xxxxxxxxxxxxxx 1` (Th
 * SocialBoost now supports account management through a local database located in the ``/plugins`` folder.
   * The database keeps track of accounts used for specific submissions, ensuring they are not reused for the same type of submission in the future.
 * Use it to check how many bots can still submit for a given submission (Sharedfiles, Game Review, Workshop). The expected syntax is: ``CHECKBOOST [Type] [Id]``.
-   * ``[Type]`` can be: sharedlike, sharedfav, workshop, reviews
+   * ``[Type]`` accepted: sharedlike, sharedfav, workshop, reviews
    * Sharedlike and Sharedfav => Expected the same ID that you find at the end of the URL.
    * Workshop => Expected the Steam Profile URL of the profile, same as in the browser.
    * Reviews => Expected the Review URL, same as in the browser.
